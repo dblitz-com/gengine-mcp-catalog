@@ -70,11 +70,19 @@ class DynamicToolRegistry:
         
         async def dynamic_tool_wrapper(**kwargs):
             """Dynamic tool that forwards requests to the appropriate MCP server"""
+            # Extract arguments - handle both direct kwargs and nested kwargs
+            if len(kwargs) == 1 and "kwargs" in kwargs:
+                # Handle case where arguments are nested under 'kwargs' key
+                arguments = kwargs["kwargs"]
+            else:
+                # Handle case where arguments are passed directly
+                arguments = kwargs
+            
             # Check if server requires subprocess
             if server_config["execution"]["type"] == "npx":
-                return await self._execute_npx_tool(server_name, tool_name, kwargs)
+                return await self._execute_npx_tool(server_name, tool_name, arguments)
             elif server_config["execution"]["type"] == "python":
-                return await self._execute_python_tool(server_name, tool_name, kwargs)
+                return await self._execute_python_tool(server_name, tool_name, arguments)
             else:
                 return {
                     "error": f"Unknown execution type: {server_config['execution']['type']}"
