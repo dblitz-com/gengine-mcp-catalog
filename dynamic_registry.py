@@ -14,9 +14,13 @@ import subprocess
 import sys
 from dataclasses import dataclass
 import logging
+import inspect
+from functools import wraps
 
 # Import subprocess manager
 from .subprocess_manager import get_subprocess_manager
+# Import tool schemas
+from .tool_schemas import get_tool_schema
 
 logger = logging.getLogger(__name__)
 
@@ -61,36 +65,87 @@ class DynamicToolRegistry:
         logger.info(f"Loaded {len(self.tool_map)} tools from {len(self.config['servers'])} servers")
     
     def create_dynamic_tool_wrapper(self, tool_name: str) -> Callable:
-        """Create a dynamic wrapper function for a tool"""
+        """Create a dynamic wrapper function for a tool with proper parameter handling"""
         server_name = self.tool_map.get(tool_name)
         if not server_name:
             raise ValueError(f"Tool '{tool_name}' not found in registry")
         
         server_config = self.config["servers"][server_name]
         
-        async def dynamic_tool_wrapper(**kwargs):
-            """Dynamic tool that forwards requests to the appropriate MCP server"""
-            # Extract arguments - handle both direct kwargs and nested kwargs
-            if len(kwargs) == 1 and "kwargs" in kwargs:
-                # Handle case where arguments are nested under 'kwargs' key
-                arguments = kwargs["kwargs"]
-            else:
-                # Handle case where arguments are passed directly
-                arguments = kwargs
-                
+        # Create a clean tool name with server prefix
+        clean_tool_name = f"{server_name}_{tool_name}".replace("-", "_")
+        
+        # Get tool schema if available
+        tool_schema = get_tool_schema(server_name, tool_name)
+        
+        # Create the base wrapper function
+        async def base_wrapper(**kwargs):
+            """Base wrapper that forwards to MCP server"""
             # Check if server requires subprocess
             if server_config["execution"]["type"] == "npx":
-                return await self._execute_npx_tool(server_name, tool_name, arguments)
+                return await self._execute_npx_tool(server_name, tool_name, kwargs)
             elif server_config["execution"]["type"] == "python":
-                return await self._execute_python_tool(server_name, tool_name, arguments)
+                return await self._execute_python_tool(server_name, tool_name, kwargs)
             else:
                 return {
                     "error": f"Unknown execution type: {server_config['execution']['type']}"
                 }
         
-        # Set metadata for FastMCP
-        dynamic_tool_wrapper.__name__ = tool_name
-        dynamic_tool_wrapper.__doc__ = f"Tool from {server_config['description']}"
+        # If we have a schema, create a function with proper parameters
+        if tool_schema and "properties" in tool_schema:
+            # Build parameter list from schema
+            params = []
+            defaults = {}
+            
+            # Add required parameters first
+            required = tool_schema.get("required", [])
+            for param_name in required:
+                params.append(param_name)
+            
+            # Add optional parameters with defaults
+            for param_name, param_def in tool_schema["properties"].items():
+                if param_name not in required:
+                    params.append(param_name)
+                    defaults[param_name] = param_def.get("default", None)
+            
+            # Create function signature dynamically
+            sig_parts = []
+            for param in params:
+                if param in defaults:
+                    sig_parts.append(f"{param}=None")
+                else:
+                    sig_parts.append(param)
+            
+            # Build the wrapper function with proper signature
+            # We need to handle both required and optional parameters properly
+            param_assignments = []
+            for param in params:
+                if param in required:
+                    # Required parameters are always included
+                    param_assignments.append(f"    kwargs['{param}'] = {param}")
+                else:
+                    # Optional parameters only included if not None
+                    param_assignments.append(f"    if {param} is not None: kwargs['{param}'] = {param}")
+            
+            func_def = f"""
+async def {clean_tool_name}({', '.join(sig_parts)}):
+    '''Tool from {server_config['description']}'''
+    # Build kwargs from actual parameters
+    kwargs = {{}}
+{chr(10).join(param_assignments)}
+    return await base_wrapper(**kwargs)
+"""
+            
+            # Execute the function definition
+            local_vars = {"base_wrapper": base_wrapper}
+            exec(func_def, local_vars)
+            dynamic_tool_wrapper = local_vars[clean_tool_name]
+            
+        else:
+            # No schema, use generic wrapper
+            dynamic_tool_wrapper = base_wrapper
+            dynamic_tool_wrapper.__name__ = clean_tool_name
+            dynamic_tool_wrapper.__doc__ = f"Tool from {server_config['description']}"
         
         return dynamic_tool_wrapper
     
@@ -217,11 +272,31 @@ class DynamicToolRegistry:
                 # Create dynamic wrapper
                 wrapper = self.create_dynamic_tool_wrapper(tool_name)
                 
-                # Register with FastMCP
-                # We need to use the tool decorator directly
+                # Create a clean tool name with server prefix
+                clean_tool_name = f"{server_name}_{tool_name}".replace("-", "_")
+                
+                # Get tool schema for better description
+                tool_schema = get_tool_schema(server_name, tool_name)
+                tool_description = f"Tool from {server_config['description']}"
+                
+                # Add schema info to description if available
+                if tool_schema:
+                    # Extract parameter info for description
+                    params = []
+                    for param_name, param_def in tool_schema.get("properties", {}).items():
+                        param_desc = param_def.get("description", "")
+                        if param_desc:
+                            params.append(f"{param_name}: {param_desc}")
+                    if params:
+                        tool_description += f"\n\nParameters:\n" + "\n".join(f"- {p}" for p in params[:3])
+                        if len(params) > 3:
+                            tool_description += f"\n... and {len(params) - 3} more"
+                
+                # Register with FastMCP using the clean name
+                # The wrapper already has the proper signature
                 decorated_tool = mcp_instance.tool(
-                    name=tool_name,
-                    description=f"Tool from {server_config['description']}"
+                    name=clean_tool_name,
+                    description=tool_description
                 )(wrapper)
                 registered += 1
                 
