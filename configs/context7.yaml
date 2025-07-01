@@ -1,0 +1,21 @@
+name: Context7
+description: Context7 for library documentation, code context, and package resolution
+category: official
+version: latest
+package: "@upstash/context7-mcp"
+
+execution:
+  type: npx
+  command: npx
+  args:
+    - "@upstash/context7-mcp"
+
+environment: {}
+
+tools:
+  - resolve_library_id
+  - get_library_docs
+
+metadata:
+  documentation: https://context7.com/
+  npm: https://www.npmjs.com/package/@upstash/context7-mcp

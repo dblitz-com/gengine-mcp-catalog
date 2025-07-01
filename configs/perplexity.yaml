@@ -1,0 +1,24 @@
+name: perplexity-ask
+description: Perplexity AI integration for web search, research, and real-time information
+category: official
+version: latest
+package: server-perplexity-ask
+
+execution:
+  type: npx
+  command: npx
+  args:
+    - server-perplexity-ask
+
+environment:
+  PERPLEXITY_API_KEY:
+    required: true
+    description: Perplexity API key for AI-powered search
+    example: pplx-...
+    
+tools:
+  - perplexity_ask
+
+metadata:
+  documentation: https://docs.perplexity.ai/
+  api_docs: https://docs.perplexity.ai/api-reference/chat-completions

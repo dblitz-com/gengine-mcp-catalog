@@ -1,0 +1,65 @@
+name: taskmaster-ai
+description: TaskMaster AI for project management, task automation, and AI-powered research
+category: official
+version: latest
+package: task-master-ai
+
+# How to run this MCP server
+execution:
+  type: npx
+  command: npx
+  args: 
+    - task-master-ai
+
+# Required environment variables
+environment:
+  OPENAI_API_KEY:
+    required: true
+    description: OpenAI API key for AI-powered features
+    example: sk-...
+  PERPLEXITY_API_KEY:
+    required: false
+    description: Perplexity API key for research features
+    example: pplx-...
+
+# Available tools (can be auto-discovered or manually listed)
+tools:
+  - initialize_project
+  - models
+  - rules
+  - parse_prd
+  - analyze_project_complexity
+  - expand_task
+  - expand_all
+  - get_tasks
+  - get_task
+  - next_task
+  - complexity_report
+  - set_task_status
+  - generate
+  - add_task
+  - add_subtask
+  - update
+  - update_task
+  - update_subtask
+  - remove_task
+  - remove_subtask
+  - clear_subtasks
+  - move_task
+  - add_dependency
+  - remove_dependency
+  - validate_dependencies
+  - fix_dependencies
+  - list_tags
+  - add_tag
+  - delete_tag
+  - use_tag
+  - rename_tag
+  - copy_tag
+  - research
+
+# Additional metadata
+metadata:
+  documentation: https://github.com/taskmaster-ai/taskmaster
+  repository: https://github.com/taskmaster-ai/taskmaster
+  issues: https://github.com/taskmaster-ai/taskmaster/issues

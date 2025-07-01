@@ -1,0 +1,21 @@
+name: sequential-thinking
+description: Sequential thinking tool for complex problem solving and multi-step analysis
+category: official
+version: latest
+package: "@modelcontextprotocol/server-sequential-thinking"
+
+execution:
+  type: npx
+  command: npx
+  args:
+    - "@modelcontextprotocol/server-sequential-thinking"
+
+environment: {}
+
+tools:
+  - sequentialthinking
+
+metadata:
+  documentation: https://github.com/modelcontextprotocol/servers/tree/main/src/sequential-thinking
+  repository: https://github.com/modelcontextprotocol/servers
+  npm: https://www.npmjs.com/package/@modelcontextprotocol/server-sequential-thinking
