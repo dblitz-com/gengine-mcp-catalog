@@ -308,8 +308,18 @@ class DynamicToolRegistry:
                     async def tool_wrapper(**kwargs):
                         """Dynamic wrapper that forwards to subprocess execution"""
                         try:
+                            # Extract actual arguments - Claude wraps them in "kwargs"
+                            if "kwargs" in kwargs and isinstance(kwargs["kwargs"], dict):
+                                # Claude is passing: {"kwargs": {"id": "50.2", "status": "done", ...}}
+                                actual_args = kwargs["kwargs"]
+                                logger.info(f"Extracted kwargs for {display_name}: {actual_args}")
+                            else:
+                                # Direct parameters: {"id": "50.2", "status": "done", ...}
+                                actual_args = kwargs
+                                logger.info(f"Using direct args for {display_name}: {actual_args}")
+                            
                             # Execute via subprocess
-                            result = await self._execute_npx_tool(server_name, tool_name, kwargs)
+                            result = await self._execute_npx_tool(server_name, tool_name, actual_args)
                             return result
                         except Exception as e:
                             logger.error(f"Error executing {display_name}: {e}")
@@ -324,13 +334,15 @@ class DynamicToolRegistry:
                 wrapper_func = create_tool_wrapper()
                 
                 # Register with FastMCP using proper API - display_name is what LLM sees
-                mcp_instance.tool(
+                logger.info(f"🔧 Attempting to register tool: {display_name}")
+                
+                decorated_func = mcp_instance.tool(
                     name=display_name,
                     description=tool_description
                 )(wrapper_func)
                 
+                logger.info(f"✅ Successfully registered tool: {display_name}")
                 registered += 1
-                logger.debug(f"Registered tool: {display_name}")
                 
             except Exception as e:
                 logger.error(f"Failed to register {tool_name}: {e}")

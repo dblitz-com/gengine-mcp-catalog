@@ -112,6 +112,17 @@ def list_available_servers():
     }
 
 @mcp.tool()
+def debug_catalog_status():
+    """Debug tool to check catalog server internal state"""
+    return {
+        "catalog_status": "alive",
+        "tools_discovered": len(registry.tool_map),
+        "servers_discovered": len(registry.discovered_tools),
+        "tool_names": list(registry.tool_map.keys())[:10],  # First 10 tools
+        "discovery_success": discovery_success if 'discovery_success' in globals() else None
+    }
+
+@mcp.tool()
 async def refresh_tools():
     """Refresh tool discovery from all servers"""
     logger.info("🔄 Refreshing tool discovery...")
