@@ -19,8 +19,6 @@ from functools import wraps
 
 # Import subprocess manager
 from .subprocess_manager import get_subprocess_manager
-# Import tool schemas
-from .tool_schemas import get_tool_schema
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +46,8 @@ class DynamicToolRegistry:
         self.tool_map = {}  # Maps tool_name -> server_name
         self.server_processes = {}  # Maps server_name -> process info
         self.mcp_env_vars = {}  # Environment vars from .mcp.json
+        self.discovered_tools = {}  # Maps server_name -> tool definitions
+        self.tool_schemas = {}  # Maps server_name -> {tool_name -> schema}
         
     def load_configuration(self):
         """Load the generated MCP configuration"""
@@ -56,98 +56,116 @@ class DynamicToolRegistry:
             
         with open(self.config_path) as f:
             self.config = json.load(f)
-            
-        # Build tool map
-        for server_name, server_config in self.config.get("servers", {}).items():
-            for tool_name in server_config.get("tools", []):
-                self.tool_map[tool_name] = server_name
                 
-        logger.info(f"Loaded {len(self.tool_map)} tools from {len(self.config['servers'])} servers")
+        logger.info(f"Loaded configuration for {len(self.config['servers'])} servers")
     
-    def create_dynamic_tool_wrapper(self, tool_name: str) -> Callable:
-        """Create a dynamic wrapper function for a tool with proper parameter handling"""
-        server_name = self.tool_map.get(tool_name)
-        if not server_name:
-            raise ValueError(f"Tool '{tool_name}' not found in registry")
+    async def discover_all_tools(self):
+        """Discover tools from all configured MCP servers"""
+        logger.info("Starting dynamic tool discovery...")
         
-        server_config = self.config["servers"][server_name]
+        # Get subprocess manager
+        manager = get_subprocess_manager()
+        discovery_errors = []
         
-        # Create a clean tool name with server prefix
-        clean_tool_name = f"{server_name}_{tool_name}".replace("-", "_")
+        for server_name, server_config in self.config.get("servers", {}).items():
+            try:
+                logger.info(f"🔍 Processing server: {server_name}")
+                
+                # Check if server has required environment variables
+                requirements = self.check_server_requirements(server_name)
+                if not requirements["ready"]:
+                    logger.warning(f"   ⚠️  Skipping {server_name} - missing env vars: {requirements['missing_env']}")
+                    discovery_errors.append(f"{server_name}: Missing environment variables: {requirements['missing_env']}")
+                    continue
+                
+                logger.info(f"   ✅ Environment check passed for {server_name}")
+                
+                # Start server if needed
+                if server_name not in manager.processes:
+                    logger.info(f"   🚀 Starting {server_name} for tool discovery...")
+                    started = await manager.start_server(server_name, server_config)
+                    if not started:
+                        logger.error(f"   ❌ Failed to start {server_name}")
+                        discovery_errors.append(f"{server_name}: Failed to start server")
+                        continue
+                    
+                    # Give server more time to initialize (especially TaskMaster)
+                    if "taskmaster" in server_name.lower():
+                        logger.info(f"   ⏱️  Giving TaskMaster extra time to initialize...")
+                        await asyncio.sleep(5.0)
+                    else:
+                        await asyncio.sleep(3.0)
+                    
+                    logger.info(f"   ✅ Server {server_name} started successfully")
+                
+                # Discover tools with retry
+                logger.info(f"   🔧 Discovering tools from {server_name}...")
+                tools_response = None
+                
+                # Try discovery with retry
+                for attempt in range(3):
+                    try:
+                        tools_response = await manager.list_tools(server_name)
+                        if "error" not in tools_response:
+                            break
+                        logger.warning(f"   ⚠️  Attempt {attempt + 1} failed for {server_name}: {tools_response.get('error')}")
+                        if attempt < 2:  # Don't sleep on last attempt
+                            await asyncio.sleep(2.0)
+                    except Exception as e:
+                        logger.warning(f"   ⚠️  Attempt {attempt + 1} exception for {server_name}: {e}")
+                        if attempt < 2:
+                            await asyncio.sleep(2.0)
+                
+                if not tools_response or "error" in tools_response:
+                    error_msg = tools_response.get("error", "Unknown error") if tools_response else "No response"
+                    logger.error(f"   ❌ Error discovering tools from {server_name}: {error_msg}")
+                    discovery_errors.append(f"{server_name}: Tool discovery failed - {error_msg}")
+                    continue
+                
+                # Parse tools
+                tools = tools_response.get("tools", [])
+                self.discovered_tools[server_name] = tools
+                
+                logger.info(f"   📦 Found {len(tools)} tools from {server_name}")
+                
+                # Build tool map and schemas
+                tools_added = 0
+                for tool in tools:
+                    tool_name = tool.get("name")
+                    if tool_name:
+                        self.tool_map[tool_name] = server_name
+                        if server_name not in self.tool_schemas:
+                            self.tool_schemas[server_name] = {}
+                        self.tool_schemas[server_name][tool_name] = tool.get("inputSchema", {})
+                        tools_added += 1
+                
+                logger.info(f"   ✅ Successfully registered {tools_added} tools from {server_name}")
+                
+            except Exception as e:
+                logger.error(f"   ❌ Error discovering tools from {server_name}: {e}")
+                discovery_errors.append(f"{server_name}: Exception during discovery - {str(e)}")
+                import traceback
+                traceback.print_exc()
         
-        # Get tool schema if available
-        tool_schema = get_tool_schema(server_name, tool_name)
+        total_tools = len(self.tool_map)
+        successful_servers = len(self.discovered_tools)
+        total_servers = len(self.config.get("servers", {}))
         
-        # Create the base wrapper function
-        async def base_wrapper(**kwargs):
-            """Base wrapper that forwards to MCP server"""
-            # Check if server requires subprocess
-            if server_config["execution"]["type"] == "npx":
-                return await self._execute_npx_tool(server_name, tool_name, kwargs)
-            elif server_config["execution"]["type"] == "python":
-                return await self._execute_python_tool(server_name, tool_name, kwargs)
-            else:
-                return {
-                    "error": f"Unknown execution type: {server_config['execution']['type']}"
-                }
+        logger.info(f"📊 Tool discovery complete:")
+        logger.info(f"   🔧 {total_tools} total tools discovered")
+        logger.info(f"   📦 {successful_servers}/{total_servers} servers successful")
         
-        # If we have a schema, create a function with proper parameters
-        if tool_schema and "properties" in tool_schema:
-            # Build parameter list from schema
-            params = []
-            defaults = {}
-            
-            # Add required parameters first
-            required = tool_schema.get("required", [])
-            for param_name in required:
-                params.append(param_name)
-            
-            # Add optional parameters with defaults
-            for param_name, param_def in tool_schema["properties"].items():
-                if param_name not in required:
-                    params.append(param_name)
-                    defaults[param_name] = param_def.get("default", None)
-            
-            # Create function signature dynamically
-            sig_parts = []
-            for param in params:
-                if param in defaults:
-                    sig_parts.append(f"{param}=None")
-                else:
-                    sig_parts.append(param)
-            
-            # Build the wrapper function with proper signature
-            # We need to handle both required and optional parameters properly
-            param_assignments = []
-            for param in params:
-                if param in required:
-                    # Required parameters are always included
-                    param_assignments.append(f"    kwargs['{param}'] = {param}")
-                else:
-                    # Optional parameters only included if not None
-                    param_assignments.append(f"    if {param} is not None: kwargs['{param}'] = {param}")
-            
-            func_def = f"""
-async def {clean_tool_name}({', '.join(sig_parts)}):
-    '''Tool from {server_config['description']}'''
-    # Build kwargs from actual parameters
-    kwargs = {{}}
-{chr(10).join(param_assignments)}
-    return await base_wrapper(**kwargs)
-"""
-            
-            # Execute the function definition
-            local_vars = {"base_wrapper": base_wrapper}
-            exec(func_def, local_vars)
-            dynamic_tool_wrapper = local_vars[clean_tool_name]
-            
-        else:
-            # No schema, use generic wrapper
-            dynamic_tool_wrapper = base_wrapper
-            dynamic_tool_wrapper.__name__ = clean_tool_name
-            dynamic_tool_wrapper.__doc__ = f"Tool from {server_config['description']}"
+        if discovery_errors:
+            logger.warning("⚠️  Discovery errors encountered:")
+            for error in discovery_errors:
+                logger.warning(f"   - {error}")
         
-        return dynamic_tool_wrapper
+        # Stop all servers after discovery to clean up
+        logger.info("🧹 Stopping discovery servers...")
+        await manager.cleanup()
+        logger.info("✅ Discovery cleanup complete")
+    
+    # NOTE: Removed create_dynamic_tool_wrapper method - replaced with proper FastMCP registration
     
     async def _execute_npx_tool(self, server_name: str, tool_name: str, arguments: Dict[str, Any]):
         """Execute a tool via NPX subprocess"""
@@ -251,7 +269,7 @@ async def {clean_tool_name}({', '.join(sig_parts)}):
         return requirements
     
     def register_all_with_fastmcp(self, mcp_instance):
-        """Register all dynamic tools with a FastMCP instance"""
+        """Register all dynamic tools with a FastMCP instance using proper FastMCP API"""
         registered = 0
         skipped = 0
         
@@ -269,36 +287,50 @@ async def {clean_tool_name}({', '.join(sig_parts)}):
                 # Get server config for description
                 server_config = self.config["servers"][server_name]
                 
-                # Create dynamic wrapper
-                wrapper = self.create_dynamic_tool_wrapper(tool_name)
+                # Create display name (what LLM sees) - preserve hyphens
+                display_name = f"{server_name}_{tool_name}"
                 
-                # Create a clean tool name with server prefix
-                clean_tool_name = f"{server_name}_{tool_name}".replace("-", "_")
+                # Get discovered tool info for description
+                tool_info = None
+                for tool in self.discovered_tools.get(server_name, []):
+                    if tool.get("name") == tool_name:
+                        tool_info = tool
+                        break
                 
-                # Get tool schema for better description
-                tool_schema = get_tool_schema(server_name, tool_name)
-                tool_description = f"Tool from {server_config['description']}"
+                # Create tool description from discovered info
+                if tool_info:
+                    tool_description = tool_info.get("description", f"Tool from {server_config['description']}")
+                else:
+                    tool_description = f"Tool from {server_config['description']}"
                 
-                # Add schema info to description if available
-                if tool_schema:
-                    # Extract parameter info for description
-                    params = []
-                    for param_name, param_def in tool_schema.get("properties", {}).items():
-                        param_desc = param_def.get("description", "")
-                        if param_desc:
-                            params.append(f"{param_name}: {param_desc}")
-                    if params:
-                        tool_description += f"\n\nParameters:\n" + "\n".join(f"- {p}" for p in params[:3])
-                        if len(params) > 3:
-                            tool_description += f"\n... and {len(params) - 3} more"
+                # Create async wrapper function that forwards to subprocess execution
+                def create_tool_wrapper(server_name=server_name, tool_name=tool_name, display_name=display_name):
+                    async def tool_wrapper(**kwargs):
+                        """Dynamic wrapper that forwards to subprocess execution"""
+                        try:
+                            # Execute via subprocess
+                            result = await self._execute_npx_tool(server_name, tool_name, kwargs)
+                            return result
+                        except Exception as e:
+                            logger.error(f"Error executing {display_name}: {e}")
+                            return {
+                                "error": str(e),
+                                "tool": display_name,
+                                "server": server_name
+                            }
+                    return tool_wrapper
                 
-                # Register with FastMCP using the clean name
-                # The wrapper already has the proper signature
-                decorated_tool = mcp_instance.tool(
-                    name=clean_tool_name,
+                # Create the wrapper
+                wrapper_func = create_tool_wrapper()
+                
+                # Register with FastMCP using proper API - display_name is what LLM sees
+                mcp_instance.tool(
+                    name=display_name,
                     description=tool_description
-                )(wrapper)
+                )(wrapper_func)
+                
                 registered += 1
+                logger.debug(f"Registered tool: {display_name}")
                 
             except Exception as e:
                 logger.error(f"Failed to register {tool_name}: {e}")

@@ -60,7 +60,7 @@ class MCPConfigGenerator:
                 "package": config.get("package"),
                 "execution": config.get("execution", {}),
                 "environment": {},
-                "tools": config.get("tools", []),
+                "tools": [],  # Will be discovered dynamically
                 "metadata": config.get("metadata", {})
             }
             
@@ -90,7 +90,7 @@ class MCPConfigGenerator:
         # Add summary statistics
         self.generated_config["summary"] = {
             "total_servers": len(self.generated_config["servers"]),
-            "total_tools": sum(len(s["tools"]) for s in self.generated_config["servers"].values()),
+            "total_tools": "Will be discovered dynamically",
             "total_env_vars": len(self.generated_config["environment_requirements"]),
             "categories": list(self.generated_config["categories"].keys())
         }

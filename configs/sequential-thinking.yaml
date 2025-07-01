@@ -12,8 +12,7 @@ execution:
 
 environment: {}
 
-tools:
-  - sequentialthinking
+# Tools will be discovered dynamically via MCP protocol
 
 metadata:
   documentation: https://github.com/modelcontextprotocol/servers/tree/main/src/sequential-thinking

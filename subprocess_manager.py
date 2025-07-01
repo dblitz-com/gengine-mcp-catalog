@@ -149,6 +149,35 @@ class SubprocessManager:
         except Exception as e:
             logger.error(f"Error stopping server {server_name}: {e}")
     
+    async def list_tools(self, server_name: str) -> Dict[str, Any]:
+        """List available tools from an MCP server"""
+        if server_name not in self.processes:
+            return {"error": f"Server {server_name} not running"}
+        
+        # Create JSON-RPC request for tools/list
+        request_id = str(uuid.uuid4())
+        request = {
+            "jsonrpc": "2.0",
+            "method": "tools/list",
+            "params": {},
+            "id": request_id
+        }
+        
+        # Create future for response
+        future = asyncio.Future()
+        self.pending_requests[request_id] = future
+        
+        # Send request
+        await self._send_request(server_name, request)
+        
+        # Wait for response (with timeout)
+        try:
+            response = await asyncio.wait_for(future, timeout=10.0)
+            return response
+        except asyncio.TimeoutError:
+            del self.pending_requests[request_id]
+            return {"error": "Tool list timeout"}
+    
     async def execute_tool(self, server_name: str, tool_name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
         """Execute a tool on an MCP server"""
         if server_name not in self.processes:

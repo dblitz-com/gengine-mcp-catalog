@@ -22,41 +22,7 @@ environment:
     description: Perplexity API key for research features
     example: pplx-...
 
-# Available tools (can be auto-discovered or manually listed)
-tools:
-  - initialize_project
-  - models
-  - rules
-  - parse_prd
-  - analyze_project_complexity
-  - expand_task
-  - expand_all
-  - get_tasks
-  - get_task
-  - next_task
-  - complexity_report
-  - set_task_status
-  - generate
-  - add_task
-  - add_subtask
-  - update
-  - update_task
-  - update_subtask
-  - remove_task
-  - remove_subtask
-  - clear_subtasks
-  - move_task
-  - add_dependency
-  - remove_dependency
-  - validate_dependencies
-  - fix_dependencies
-  - list_tags
-  - add_tag
-  - delete_tag
-  - use_tag
-  - rename_tag
-  - copy_tag
-  - research
+# Tools will be discovered dynamically via MCP protocol
 
 # Additional metadata
 metadata:

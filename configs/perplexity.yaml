@@ -15,9 +15,8 @@ environment:
     required: true
     description: Perplexity API key for AI-powered search
     example: pplx-...
-    
-tools:
-  - perplexity_ask
+
+# Tools will be discovered dynamically via MCP protocol
 
 metadata:
   documentation: https://docs.perplexity.ai/
