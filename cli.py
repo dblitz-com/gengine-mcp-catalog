@@ -160,20 +160,21 @@ For more information, visit: https://github.com/yourusername/mcp-catalog-server
 
 async def cmd_serve(args, config: CatalogConfig):
     """Run the serve command."""
-    # Create server with configuration
-    server = create_server(
-        config_path=args.config,
-        env_path=args.env
-    )
+    # For MCP servers, we need to run synchronously, not async
+    import os
+    from .main import initialize_catalog, mcp
     
-    # Override with CLI arguments
-    if args.host:
-        config._config["server"]["host"] = args.host
-    if args.port:
-        config._config["server"]["port"] = args.port
+    # Set environment variable for config path if provided
+    if args.config:
+        os.environ["MCP_CATALOG_CONFIG_PATH"] = args.config
+    if args.env:
+        os.environ["MCP_CATALOG_ENV_PATH"] = args.env
     
-    # Run the server
-    await server.run()
+    # Initialize and run
+    initialize_catalog(args.config)
+    
+    # Exit the async context and run the server
+    return "RUN_SYNC"
 
 
 async def cmd_init(args, config: CatalogConfig):
@@ -325,7 +326,28 @@ async def async_main(args):
     
     cmd_func = commands.get(args.command)
     if cmd_func:
-        return await cmd_func(args, config)
+        result = await cmd_func(args, config)
+        # Special handling for serve command
+        if result == "RUN_SYNC":
+            # Import and run the MCP server synchronously
+            from .main import mcp
+            import atexit
+            
+            # Register cleanup
+            async def cleanup():
+                from .subprocess_manager import get_subprocess_manager
+                manager = get_subprocess_manager()
+                await manager.cleanup()
+            
+            def sync_cleanup():
+                import asyncio
+                asyncio.run(cleanup())
+            
+            atexit.register(sync_cleanup)
+            
+            # Exit async context and run server
+            return "RUN_MCP_SYNC"
+        return result
     else:
         print(f"Unknown command: {args.command}")
         return 1
@@ -342,6 +364,13 @@ def main():
     # Run async main
     try:
         exit_code = asyncio.run(async_main(args))
+        
+        # Special case for MCP server
+        if exit_code == "RUN_MCP_SYNC":
+            from .main import mcp
+            mcp.run()
+            sys.exit(0)
+        
         sys.exit(exit_code or 0)
     except KeyboardInterrupt:
         print("\nInterrupted by user")
