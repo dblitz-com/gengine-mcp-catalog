@@ -62,34 +62,172 @@ def initialize_catalog():
     return registry
 
 async def initialize_with_discovery():
-    """Initialize catalog with pre-discovery of tools BEFORE FastMCP starts"""
-    logger.info("🔍 Pre-discovering tools before FastMCP initialization...")
+    """Initialize catalog with pre-discovery for proxy architecture"""
+    logger.info("🔍 Initializing MCP Catalog Server with proxy architecture...")
     
     try:
-        # Discover tools from all servers FIRST
-        await registry.discover_all_tools()
+        from .subprocess_manager import get_subprocess_manager
+        manager = get_subprocess_manager()
         
-        # Log discovery results
-        total_tools = len(registry.tool_map)
-        total_servers = len(registry.discovered_tools)
-        logger.info(f"📊 Discovery Results: {total_tools} tools from {total_servers} servers")
+        # 1. Start configured servers that are ready
+        logger.info("🚀 Starting configured MCP servers...")
+        started_servers = []
         
-        # Now that tools are discovered, we can register them with FastMCP
-        if total_tools > 0:
-            logger.info("🔧 Registering tools with FastMCP...")
-            registration_result = registry.register_all_with_fastmcp(mcp)
-            logger.info(f"✅ Registration complete: {registration_result['registered']} registered, {registration_result['skipped']} skipped")
-        else:
-            logger.warning("⚠️  No tools discovered to register")
+        for server_name, server_config in registry.config.get("servers", {}).items():
+            req = registry.check_server_requirements(server_name)
+            if req["ready"]:
+                try:
+                    # Transform config format for subprocess manager
+                    transformed_config = transform_config_for_subprocess(server_config)
+                    
+                    # Start the server process with transformed config
+                    success = await manager.start_server(server_name, transformed_config)
+                    if success:
+                        started_servers.append(server_name)
+                        logger.info(f"   ✅ Started: {server_name}")
+                    else:
+                        logger.warning(f"   ❌ Failed to start: {server_name}")
+                except Exception as e:
+                    logger.warning(f"   ❌ Error starting {server_name}: {e}")
+            else:
+                logger.warning(f"   ⏭️  Skipped {server_name}: missing {req['missing_env']}")
+        
+        # 2. Discover tools from started servers
+        logger.info("🔍 Discovering tools from started servers...")
+        all_discovered_tools = []
+        
+        for server_name in started_servers:
+            try:
+                # Use list_tools method from subprocess_manager
+                tools_response = await manager.list_tools(server_name)
+                if tools_response and "tools" in tools_response:
+                    tools = tools_response["tools"]
+                    logger.info(f"   📊 {server_name}: {len(tools)} tools discovered")
+                    for tool in tools:
+                        tool["server"] = server_name  # Add server context
+                        all_discovered_tools.append(tool)
+                else:
+                    logger.warning(f"   ⚠️  {server_name}: No tools discovered")
+            except Exception as e:
+                logger.warning(f"   ❌ Error discovering tools from {server_name}: {e}")
+        
+        # 3. Register proxy tools with FastMCP
+        logger.info("🔗 Registering proxy tools...")
+        proxy_tools_registered = register_proxy_tools(all_discovered_tools)
         
         logger.info("🎉 MCP Catalog Server initialization complete!")
+        logger.info(f"   🚀 {len(started_servers)} servers running")
+        logger.info(f"   🔧 {len(all_discovered_tools)} tools discovered")
+        logger.info(f"   🔗 {proxy_tools_registered} proxy tools registered")
+        
+        # Keep servers running for proxying - DON'T cleanup!
+        logger.info("💡 Servers kept running for tool proxying")
+        
         return True
         
     except Exception as e:
-        logger.error(f"❌ Error during pre-discovery initialization: {e}")
+        logger.error(f"❌ Error during initialization: {e}")
         import traceback
         traceback.print_exc()
         return False
+
+def transform_config_for_subprocess(server_config):
+    """Transform local registry config format to subprocess manager format"""
+    package = server_config.get("package", {})
+    package_name = package.get("name", "")
+    registry_type = package.get("registry", "npm")
+    
+    # Build execution config based on package type
+    if registry_type == "npm":
+        if package_name.startswith("@"):
+            # Scoped npm package
+            execution = {
+                "command": "npx",
+                "args": ["-y", package_name]
+            }
+        else:
+            # Regular npm package
+            execution = {
+                "command": "npx", 
+                "args": ["-y", package_name]
+            }
+    elif registry_type == "local":
+        # Local Python server (like knowledge-graph)
+        execution = {
+            "command": "python",
+            "args": ["-m", "mcp_server"]  # This will need adjustment per server
+        }
+    else:
+        # Default to npm
+        execution = {
+            "command": "npx",
+            "args": ["-y", package_name]
+        }
+    
+    # Get environment variables from config
+    env_vars = {}
+    config_env = server_config.get("config", {}).get("env", {})
+    
+    # Build the subprocess manager format
+    return {
+        "execution": execution,
+        "environment": env_vars
+    }
+
+def register_proxy_tools(discovered_tools):
+    """Register proxy tools with FastMCP that forward to subprocess servers"""
+    from .subprocess_manager import get_subprocess_manager
+    
+    registered_count = 0
+    manager = get_subprocess_manager()
+    
+    for tool_info in discovered_tools:
+        try:
+            server_name = tool_info["server"]
+            tool_name = tool_info["name"]
+            tool_description = tool_info.get("description", f"Tool {tool_name} from {server_name}")
+            
+            # Create unique tool name to avoid conflicts
+            proxy_tool_name = f"{server_name}_{tool_name}"
+            
+            # Create proxy function with closure to capture variables
+            def create_proxy_tool(srv_name, tl_name):
+                async def proxy_tool(**kwargs):
+                    """Proxy tool that forwards to subprocess MCP server"""
+                    try:
+                        # Handle Claude's nested argument structure  
+                        if "kwargs" in kwargs and isinstance(kwargs["kwargs"], dict):
+                            actual_args = kwargs["kwargs"]
+                        else:
+                            actual_args = kwargs
+                        
+                        # Forward request to target server via JSON-RPC
+                        result = await manager.execute_tool(
+                            server_name=srv_name,
+                            tool_name=tl_name,
+                            arguments=actual_args
+                        )
+                        return result
+                    except Exception as e:
+                        logger.error(f"❌ Proxy error for {srv_name}_{tl_name}: {e}")
+                        return {"error": f"Proxy error: {str(e)}"}
+                
+                return proxy_tool
+            
+            # Register with FastMCP
+            proxy_func = create_proxy_tool(server_name, tool_name)
+            decorated_func = mcp.tool(
+                name=proxy_tool_name,
+                description=tool_description
+            )(proxy_func)
+            
+            registered_count += 1
+            logger.debug(f"   ✅ Registered proxy: {proxy_tool_name}")
+            
+        except Exception as e:
+            logger.warning(f"   ❌ Failed to register proxy for {tool_info.get('name', 'unknown')}: {e}")
+    
+    return registered_count
 
 # Load environment variables
 load_environment()
@@ -102,8 +240,44 @@ configs_dir = Path(__file__).parent / "configs"
 registry_sync_manager = RegistrySyncManager(configs_dir)
 config_exporter = ConfigurationExporter(configs_dir)
 
-# Initialize FastMCP server
-mcp = FastMCP(name="mcp-catalog", version="1.0.0")
+# Use FastMCP server lifecycle management pattern from the documentation
+from contextlib import asynccontextmanager
+from typing import AsyncIterator
+
+@asynccontextmanager
+async def server_lifespan(server: FastMCP) -> AsyncIterator[dict]:
+    """Manage server startup and shutdown lifecycle with proxy initialization"""
+    global discovery_success, _proxy_initialized
+    
+    logger.info("🔍 FastMCP server starting - initializing proxy architecture...")
+    
+    # Initialize proxy on startup
+    try:
+        discovery_success = await initialize_with_discovery()
+        _proxy_initialized = True
+        if discovery_success:
+            logger.info("✅ Proxy initialization completed successfully")
+        else:
+            logger.error("❌ Proxy initialization failed")
+    except Exception as e:
+        logger.error(f"❌ Error during proxy initialization: {e}")
+        discovery_success = False
+    
+    try:
+        yield {"discovery_success": discovery_success, "proxy_initialized": _proxy_initialized}
+    finally:
+        # Cleanup on shutdown
+        logger.info("🔄 Cleaning up proxy servers...")
+        try:
+            from .subprocess_manager import get_subprocess_manager
+            manager = get_subprocess_manager()
+            await manager.cleanup()
+            logger.info("✅ Proxy cleanup completed")
+        except Exception as e:
+            logger.error(f"❌ Error during proxy cleanup: {e}")
+
+# Apply lifespan to FastMCP server
+mcp = FastMCP(name="mcp-catalog", version="1.0.0", lifespan=server_lifespan)
 
 # Add meta-tools (these work immediately)
 @mcp.tool()
@@ -114,7 +288,7 @@ def list_available_servers():
         "servers": list(servers.keys()),
         "total": len(servers),
         "discovered_tools": len(registry.tool_map),
-        "discovery_status": "complete" if registry.discovered_tools else "pending"
+        "discovery_status": "on-demand"  # Tools are discovered when needed
     }
 
 @mcp.tool()
@@ -241,13 +415,33 @@ def get_server_configuration():
     """
     return config_exporter.get_current_configuration()
 
-# Run pre-discovery initialization synchronously during startup
-logger.info("🚀 Starting pre-discovery initialization...")
-discovery_success = asyncio.run(initialize_with_discovery())
+# Initialize state variables for proxy
+logger.info("🚀 MCP Catalog ready - proxy initialization will happen during FastMCP startup")
+discovery_success = None
+_proxy_initialized = False
 
 if __name__ == "__main__":
     import atexit
+    import os
     from .subprocess_manager import get_subprocess_manager
+    
+    # Check if we should trigger discovery
+    trigger_env = os.getenv("MCP_CATALOG_TRIGGER_DISCOVERY")
+    logger.info(f"🔍 Discovery trigger env var: {trigger_env}")
+    
+    if trigger_env == "true":
+        logger.info("🔍 Triggering pre-discovery initialization...")
+        try:
+            import asyncio
+            discovery_success = asyncio.run(initialize_with_discovery())
+            if discovery_success:
+                logger.info("✅ Pre-discovery completed successfully")
+            else:
+                logger.error("❌ Pre-discovery failed")
+        except Exception as e:
+            logger.error(f"❌ Error during pre-discovery: {e}")
+    else:
+        logger.info("⏭️  Skipping pre-discovery (trigger not set)")
     
     # Register cleanup handler
     async def cleanup():
