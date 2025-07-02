@@ -34,23 +34,35 @@ mcp-catalog-server init
 This creates a `~/.mcp/` directory with:
 - `config.json` - Main configuration
 - `.env` - Environment variables for API keys
-- `configs/` - YAML files for MCP servers
+- `custom_registry.json` - Optional custom server definitions
 
-### Add MCP Servers
+### Add Custom MCP Servers (Optional)
 
-Create YAML files in `~/.mcp/configs/` for each MCP server. Example:
+The catalog includes popular MCP servers by default. To add custom servers, create `~/.mcp/custom_registry.json`:
 
-```yaml
-# ~/.mcp/configs/github.yaml
-name: github
-description: "GitHub API integration for MCP"
-type: npx
-command: "@modelcontextprotocol/server-github"
-env:
-  GITHUB_TOKEN: "${GITHUB_TOKEN}"
-metadata:
-  author: "Anthropic"
-  version: "latest"
+```json
+{
+  "my-custom-server": {
+    "id": "custom/my-server",
+    "name": "my-custom-server",
+    "description": "My custom MCP server",
+    "package": {
+      "name": "my-mcp-server",
+      "registry": "npm",
+      "version": "latest"
+    },
+    "config": {
+      "env": {
+        "API_KEY": {
+          "required": true,
+          "description": "API key for my service"
+        }
+      },
+      "args": []
+    },
+    "categories": ["custom"]
+  }
+}
 ```
 
 ### Start the Server
@@ -96,16 +108,11 @@ export MCP_CATALOG_AUTO_DISCOVER=true
     "log_level": "INFO"
   },
   "paths": {
-    "configs": "~/.mcp/configs",
     "logs": "~/.mcp/logs",
     "cache": "~/.mcp/cache"
   },
   "discovery": {
-    "auto_discover": true,
-    "scan_paths": [
-      "~/.mcp/servers",
-      "/usr/local/share/mcp-servers"
-    ]
+    "auto_discover": true
   }
 }
 ```
@@ -167,7 +174,7 @@ The catalog server provides built-in tools for management:
 - `list_all_tools()` - Browse all available tools
 - `search_tools(query)` - Search for tools by keyword
 - `get_tool_details(tool_name)` - Get detailed tool documentation
-- `refresh_configuration()` - Reload configuration from YAML files
+- `refresh_configuration()` - Reload configuration from local registry
 
 ## Development
 
@@ -185,15 +192,15 @@ pip install -e .
 pytest tests/
 ```
 
-## Migration from Local Setup
+## Migration from Individual Servers
 
-If you're currently using local paths in your `.mcp.json`:
+If you're currently using individual MCP server entries in your `.mcp.json`:
 
 1. Install the package: `pip install mcp-catalog-server`
 2. Initialize config: `mcp-catalog-server init`
-3. Copy your server YAML files to `~/.mcp/configs/`
-4. Update your Claude Desktop config to use the catalog server
-5. Remove individual server entries
+3. Add any custom servers to `~/.mcp/custom_registry.json` (optional)
+4. Update your Claude Desktop config to use only the catalog server
+5. Remove individual server entries - the catalog includes popular servers by default
 
 ## License
 

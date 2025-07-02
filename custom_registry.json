@@ -1,0 +1,26 @@
+{
+  "custom-server-example": {
+    "id": "custom/example-server",
+    "name": "custom-server-example",
+    "description": "Example custom MCP server for testing custom registry support",
+    "package": {
+      "name": "my-custom-mcp-server",
+      "registry": "npm",
+      "version": "latest"
+    },
+    "config": {
+      "env": {
+        "CUSTOM_API_KEY": {
+          "required": true,
+          "description": "API key for custom service"
+        }
+      },
+      "args": ["--custom-flag"]
+    },
+    "categories": ["custom", "testing"],
+    "repository": {
+      "url": "https://github.com/example/custom-mcp-server",
+      "source": "github"
+    }
+  }
+}

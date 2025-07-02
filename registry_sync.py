@@ -10,11 +10,11 @@ import json
 import logging
 from pathlib import Path
 from typing import Dict, List, Any, Optional
-import aiohttp
 import yaml
 from datetime import datetime
 
 from .config_parser import ConfigurationParser, MCPServerConfig, CommandType
+from .local_registry import LocalRegistry
 
 logger = logging.getLogger(__name__)
 
@@ -134,10 +134,7 @@ class RegistryServer:
 
 
 class RegistrySyncManager:
-    """Manages synchronization with the official MCP registry"""
-    
-    REGISTRY_BASE_URL = "https://registry.modelcontextprotocol.io"
-    REGISTRY_API_VERSION = "v0"
+    """Manages synchronization with the local MCP registry"""
     
     def __init__(self, configs_dir: Path):
         self.configs_dir = configs_dir
@@ -147,33 +144,29 @@ class RegistrySyncManager:
         # Create registry subdirectory for synced configs
         self.registry_configs_dir = self.configs_dir / "registry"
         self.registry_configs_dir.mkdir(exist_ok=True)
+        
+        # Initialize local registry
+        custom_registry_path = self.configs_dir / "custom_registry.json"
+        self.local_registry = LocalRegistry(custom_registry_path)
     
     async def fetch_registry_data(self) -> Dict[str, Any]:
-        """Fetch the official registry data"""
-        url = f"{self.REGISTRY_BASE_URL}/{self.REGISTRY_API_VERSION}/servers"
+        """Fetch data from the local registry"""
+        servers = self.local_registry.list_servers()
         
-        async with aiohttp.ClientSession() as session:
-            try:
-                async with session.get(url, timeout=30) as response:
-                    if response.status != 200:
-                        raise Exception(f"Registry returned status {response.status}")
-                    
-                    data = await response.json()
-                    logger.info(f"Fetched registry data with {len(data.get('servers', []))} servers")
-                    return data
-                    
-            except asyncio.TimeoutError:
-                raise Exception("Timeout fetching registry data")
-            except Exception as e:
-                logger.error(f"Error fetching registry: {e}")
-                raise
+        logger.info(f"Loaded {len(servers)} servers from local registry")
+        
+        return {
+            "servers": servers,
+            "total_count": len(servers),
+            "version": "local-v1"
+        }
     
     async def browse_official_registry(self, 
                                      search_query: Optional[str] = None,
                                      categories_filter: Optional[List[str]] = None,
                                      limit: int = 50) -> Dict[str, Any]:
         """
-        Browse the official MCP registry without adding servers
+        Browse the local MCP registry without adding servers
         
         Args:
             search_query: Optional search term to filter servers
@@ -183,43 +176,27 @@ class RegistrySyncManager:
         Returns:
             List of available servers with metadata
         """
-        logger.info("Browsing official registry...")
+        logger.info("Browsing local registry...")
         
-        # Fetch registry data
-        registry_data = await self.fetch_registry_data()
-        servers = registry_data.get("servers", [])
+        # Get servers from local registry
+        servers = self.local_registry.list_servers(
+            categories=categories_filter,
+            search=search_query
+        )
         
-        # Extract available categories
-        all_categories = set()
-        for server_data in servers:
-            all_categories.update(server_data.get("categories", []))
-        
-        # Filter by search query
-        if search_query:
-            search_lower = search_query.lower()
-            servers = [
-                s for s in servers 
-                if search_lower in s.get("name", "").lower() or 
-                   search_lower in s.get("description", "").lower()
-            ]
-        
-        # Filter by categories if specified
-        if categories_filter:
-            servers = [
-                s for s in servers 
-                if any(cat in categories_filter for cat in s.get("categories", []))
-            ]
+        # Get all categories
+        all_categories = self.local_registry.get_categories()
         
         # Limit results
         servers = servers[:limit]
         
         # Format results
         results = {
-            "total_available": len(registry_data.get("servers", [])),
+            "total_available": len(self.local_registry.list_servers()),
             "filtered_count": len(servers),
             "servers": [],
             "categories": sorted(list(all_categories)),
-            "registry_version": registry_data.get("version", self.REGISTRY_API_VERSION)
+            "registry_version": "local-v1"
         }
         
         for server_data in servers:
@@ -414,22 +391,14 @@ class RegistrySyncManager:
         }
     
     async def fetch_server_details(self, server_id: str) -> Optional[Dict[str, Any]]:
-        """Fetch detailed information about a specific server"""
-        url = f"{self.REGISTRY_BASE_URL}/{self.REGISTRY_API_VERSION}/servers/{server_id}"
+        """Fetch detailed information about a specific server from local registry"""
+        server = self.local_registry.get_server(server_id)
         
-        async with aiohttp.ClientSession() as session:
-            try:
-                async with session.get(url, timeout=30) as response:
-                    if response.status == 404:
-                        return None
-                    if response.status != 200:
-                        raise Exception(f"Registry returned status {response.status}")
-                    
-                    return await response.json()
-                    
-            except Exception as e:
-                logger.error(f"Error fetching server details for {server_id}: {e}")
-                raise
+        if server:
+            # Add fetch timestamp
+            server["_fetched_at"] = datetime.now().isoformat()
+            
+        return server
 
 
 class ConfigurationExporter:

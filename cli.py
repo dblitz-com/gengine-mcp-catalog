@@ -129,7 +129,7 @@ For more information, visit: https://github.com/yourusername/mcp-catalog-server
     )
     list_parser.add_argument(
         "--format",
-        choices=["table", "json", "yaml"],
+        choices=["table", "json"],
         default="table",
         help="Output format (default: table)"
     )
@@ -170,8 +170,16 @@ async def cmd_serve(args, config: CatalogConfig):
     if args.env:
         os.environ["MCP_CATALOG_ENV_PATH"] = args.env
     
-    # Initialize and run
-    initialize_catalog(args.config)
+    # Initialize and run with pre-discovery
+    initialize_catalog()
+    
+    # Store initialization for later - it will be called when server starts
+    # The pre-discovery will happen in the MCP server initialization
+    from .main import initialize_with_discovery
+    
+    # Store a flag to trigger initialization
+    import os
+    os.environ["MCP_CATALOG_TRIGGER_DISCOVERY"] = "true"
     
     # Exit the async context and run the server
     return "RUN_SYNC"
@@ -222,7 +230,7 @@ async def cmd_init(args, config: CatalogConfig):
     print(f"  - Server configs: {config_dir / 'configs'}")
     print("\nNext steps:")
     print("1. Add your API keys to .env")
-    print("2. Add server YAML files to configs/")
+    print("2. Add custom servers to custom_registry.json (optional)")
     print("3. Run: mcp-catalog-server serve")
     
     return 0
@@ -230,48 +238,87 @@ async def cmd_init(args, config: CatalogConfig):
 
 async def cmd_list(args, config: CatalogConfig):
     """Run the list command."""
-    from .config_generator import MCPConfigGenerator
+    from .local_registry import LocalRegistry
+    from .dynamic_registry import DynamicToolRegistry
     
-    config_path = args.config or "~/.mcp"
-    generator = MCPConfigGenerator(config_path)
+    # Use local registry to get server list
+    custom_registry_path = Path(args.config or "~/.mcp").expanduser() / "custom_registry.json"
+    registry = LocalRegistry(custom_registry_path if custom_registry_path.exists() else None)
+    servers = registry.list_servers()
     
-    # Get server list
-    servers = generator.list_servers()
+    # Also check readiness using dynamic registry
+    dynamic_registry = DynamicToolRegistry()
+    dynamic_registry.load_configuration()
     
     if args.format == "json":
         import json
+        # Add readiness info to servers
+        for server in servers:
+            req = dynamic_registry.check_server_requirements(server["name"])
+            server["ready"] = req["ready"]
+            server["missing_env"] = req.get("missing_env", [])
         print(json.dumps(servers, indent=2))
-    elif args.format == "yaml":
-        import yaml
-        print(yaml.dump(servers, default_flow_style=False))
     else:
         # Table format
         if not servers:
-            print("No MCP servers configured")
+            print("No MCP servers configured in local registry")
             return
         
-        print(f"{'Server':<20} {'Type':<15} {'Status':<10} {'Tools':<10}")
-        print("-" * 60)
+        print(f"{'Server':<20} {'Description':<40} {'Status':<10}")
+        print("-" * 75)
         
         for server in servers:
-            print(f"{server['name']:<20} {server.get('type', 'npx'):<15} "
-                  f"{server.get('status', 'ready'):<10} {server.get('tool_count', 0):<10}")
+            req = dynamic_registry.check_server_requirements(server["name"])
+            status = "✅ Ready" if req["ready"] else "❌ Missing env"
+            desc = server["description"][:38] + ".." if len(server["description"]) > 40 else server["description"]
+            print(f"{server['name']:<20} {desc:<40} {status:<10}")
+        
+        print(f"\n📊 Total: {len(servers)} servers ({len([s for s in servers if dynamic_registry.check_server_requirements(s['name'])['ready']])} ready)")
+        print("💡 Servers loaded from local_registry.py + custom_registry.json")
     
     return 0
 
 
 async def cmd_check(args, config: CatalogConfig):
     """Run the check command."""
+    from .dynamic_registry import DynamicToolRegistry
+    from .local_registry import LocalRegistry
+    
     print(f"Checking server: {args.server}")
     
-    # This would integrate with the actual server checking logic
-    # For now, just show a placeholder
-    print(f"✓ Server '{args.server}' configuration is valid")
-    print("  - Environment variables: OK")
-    print("  - Dependencies: OK")
-    print("  - Connection: OK")
+    # Load registries
+    custom_registry_path = Path(args.config or "~/.mcp").expanduser() / "custom_registry.json"
+    local_registry = LocalRegistry(custom_registry_path if custom_registry_path.exists() else None)
+    dynamic_registry = DynamicToolRegistry()
+    dynamic_registry.load_configuration()
     
-    return 0
+    # Check if server exists in registry
+    server = local_registry.get_server(args.server)
+    if not server:
+        print(f"❌ Server '{args.server}' not found in local registry")
+        print("💡 Available servers:")
+        for s in local_registry.list_servers():
+            print(f"   - {s['name']}")
+        return 1
+    
+    print(f"✅ Server '{args.server}' found in local registry")
+    print(f"   📝 Description: {server['description']}")
+    print(f"   📦 Package: {server['package']['name']}")
+    print(f"   🏷️  Categories: {', '.join(server['categories'])}")
+    
+    # Check environment requirements
+    req = dynamic_registry.check_server_requirements(args.server)
+    if req["ready"]:
+        print("   ✅ Environment variables: All required variables present")
+        if req["present_env"]:
+            print(f"      Present: {', '.join(req['present_env'])}")
+    else:
+        print("   ❌ Environment variables: Missing required variables")
+        print(f"      Missing: {', '.join(req['missing_env'])}")
+        if req["present_env"]:
+            print(f"      Present: {', '.join(req['present_env'])}")
+    
+    return 0 if req["ready"] else 1
 
 
 async def cmd_config(args, config: CatalogConfig):

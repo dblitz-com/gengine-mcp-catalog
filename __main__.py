@@ -11,6 +11,7 @@ import sys
 if __name__ == "__main__":
     # If no arguments provided, run as MCP server
     if len(sys.argv) == 1:
+        # Import and run the MCP server - FastMCP will handle initialization
         from .main import mcp
         mcp.run()
     else:

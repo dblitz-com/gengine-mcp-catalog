@@ -59,6 +59,65 @@ class DynamicToolRegistry:
                 
         logger.info(f"Loaded configuration for {len(self.config['servers'])} servers")
     
+    async def discover_server_tools(self, server_name: str):
+        """Discover tools from a specific server (lazy discovery)"""
+        # Check if already discovered
+        if server_name in self.discovered_tools:
+            logger.info(f"Tools already discovered for {server_name}")
+            return True
+            
+        logger.info(f"🔍 Discovering tools for {server_name}...")
+        
+        # Get subprocess manager
+        manager = get_subprocess_manager()
+        
+        try:
+            server_config = self.config.get("servers", {}).get(server_name)
+            if not server_config:
+                logger.error(f"Server {server_name} not found in configuration")
+                return False
+                
+            # Check requirements
+            requirements = self.check_server_requirements(server_name)
+            if not requirements["ready"]:
+                logger.warning(f"⚠️  {server_name} missing env vars: {requirements['missing_env']}")
+                return False
+                
+            # Start server if needed
+            if server_name not in manager.processes:
+                logger.info(f"🚀 Starting {server_name}...")
+                started = await manager.start_server(server_name, server_config)
+                if not started:
+                    logger.error(f"Failed to start {server_name}")
+                    return False
+                await asyncio.sleep(2.0)
+                
+            # Discover tools
+            tools_response = await manager.list_tools(server_name)
+            if not tools_response or "error" in tools_response:
+                logger.error(f"Error discovering tools from {server_name}")
+                return False
+                
+            # Store tools
+            tools = tools_response.get("tools", [])
+            self.discovered_tools[server_name] = tools
+            
+            # Map tools
+            for tool in tools:
+                tool_name = tool.get("name")
+                if tool_name:
+                    self.tool_map[tool_name] = server_name
+                    if server_name not in self.tool_schemas:
+                        self.tool_schemas[server_name] = {}
+                    self.tool_schemas[server_name][tool_name] = tool.get("inputSchema", {})
+                    
+            logger.info(f"✅ Discovered {len(tools)} tools from {server_name}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error discovering tools from {server_name}: {e}")
+            return False
+    
     async def discover_all_tools(self):
         """Discover tools from all configured MCP servers"""
         logger.info("Starting dynamic tool discovery...")
@@ -187,6 +246,15 @@ class DynamicToolRegistry:
     async def _execute_npx_tool(self, server_name: str, tool_name: str, arguments: Dict[str, Any]):
         """Execute a tool via NPX subprocess"""
         try:
+            # Discover tools for this server if not already done
+            if server_name not in self.discovered_tools:
+                discovered = await self.discover_server_tools(server_name)
+                if not discovered:
+                    return {
+                        "error": f"Failed to discover tools for server {server_name}",
+                        "details": "Check environment variables and server configuration"
+                    }
+            
             # Get subprocess manager
             manager = get_subprocess_manager()
             
@@ -284,6 +352,51 @@ class DynamicToolRegistry:
                     requirements["missing_env"].append(env_var)
         
         return requirements
+    
+    def register_placeholder_tools(self, mcp_instance):
+        """Register placeholder tools for all servers - actual tools discovered on-demand"""
+        registered = 0
+        skipped = 0
+        
+        # Register a generic tool for each server that will handle all tools from that server
+        for server_name, server_config in self.config.get("servers", {}).items():
+            try:
+                # Check if server is ready (has required env vars)
+                requirements = self.check_server_requirements(server_name)
+                if not requirements["ready"]:
+                    logger.warning(f"Skipping {server_name} - missing env vars: {requirements['missing_env']}")
+                    skipped += 1
+                    continue
+                
+                # Create a generic tool handler for this server
+                def create_server_handler(server_name=server_name, server_config=server_config):
+                    async def server_tool_handler(tool_name: str, **kwargs):
+                        """Generic handler that discovers and executes tools on demand"""
+                        # Discover tools for this server if not already done
+                        if server_name not in self.discovered_tools:
+                            discovered = await self.discover_server_tools(server_name)
+                            if not discovered:
+                                return {
+                                    "error": f"Failed to discover tools for server {server_name}",
+                                    "details": "Check environment variables and server configuration"
+                                }
+                        
+                        # Execute the specific tool
+                        return await self._execute_npx_tool(server_name, tool_name, kwargs)
+                    
+                    return server_tool_handler
+                
+                # Note: We can't register dynamic tools with FastMCP this way
+                # We'll need to handle this differently
+                logger.info(f"Server {server_name} configured for on-demand tool discovery")
+                registered += 1
+                
+            except Exception as e:
+                logger.error(f"Failed to configure {server_name}: {e}")
+                skipped += 1
+        
+        logger.info(f"Configured {registered} servers for lazy discovery, skipped {skipped}")
+        return {"registered": registered, "skipped": skipped}
     
     def register_all_with_fastmcp(self, mcp_instance):
         """Register all dynamic tools with a FastMCP instance using proper FastMCP API"""
