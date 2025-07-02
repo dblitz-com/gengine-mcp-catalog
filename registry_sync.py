@@ -424,7 +424,7 @@ class ConfigurationExporter:
         config_snippet = {
             "mcp-catalog": {
                 "env": {
-                    "ENABLED_SERVERS": ",".join(server_names)
+                    "MCP_CATALOG_ENABLED_SERVERS": ",".join(server_names)
                 }
             }
         }
@@ -436,7 +436,7 @@ class ConfigurationExporter:
                 "To enable these servers, add or update the following in your claude_desktop_config.json:",
                 json.dumps(config_snippet, indent=2),
                 "",
-                "Note: This will override any existing ENABLED_SERVERS setting.",
+                "Note: This will override any existing MCP_CATALOG_ENABLED_SERVERS setting.",
                 "Restart Claude Desktop for changes to take effect."
             ]
         }
@@ -452,7 +452,7 @@ class ConfigurationExporter:
         config_snippet = {
             "mcp-catalog": {
                 "env": {
-                    "DISABLED_TOOLS": ",".join(disabled_patterns)
+                    "MCP_CATALOG_DISABLED_TOOLS": ",".join(disabled_patterns)
                 }
             }
         }
@@ -464,7 +464,7 @@ class ConfigurationExporter:
                 "To disable these tools, add or update the following in your claude_desktop_config.json:",
                 json.dumps(config_snippet, indent=2),
                 "",
-                "Note: This will override any existing DISABLED_TOOLS setting.",
+                "Note: This will override any existing MCP_CATALOG_DISABLED_TOOLS setting.",
                 "Restart Claude Desktop for changes to take effect."
             ]
         }
@@ -473,6 +473,22 @@ class ConfigurationExporter:
         """Get all available servers from configs"""
         servers = {}
         
+        # Try to get servers from the registry if available
+        try:
+            from .main import registry
+            if registry and hasattr(registry, 'config'):
+                registry_servers = registry.config.get("servers", {})
+                for server_name, server_config in registry_servers.items():
+                    servers[server_name] = {
+                        "description": server_config.get("description", ""),
+                        "command": server_config.get("command", ""),
+                        "args": server_config.get("args", [])
+                    }
+                return servers
+        except (ImportError, AttributeError):
+            pass
+        
+        # Fallback to YAML files
         for yaml_file in self.configs_dir.glob("**/*.yaml"):
             try:
                 with open(yaml_file) as f:
@@ -491,8 +507,19 @@ class ConfigurationExporter:
         """Get information about current configuration from environment"""
         import os
         
-        enabled_servers = os.getenv("ENABLED_SERVERS", "").split(",") if os.getenv("ENABLED_SERVERS") else []
-        disabled_tools = os.getenv("DISABLED_TOOLS", "").split(",") if os.getenv("DISABLED_TOOLS") else []
+        enabled_servers_env = os.getenv("MCP_CATALOG_ENABLED_SERVERS", "").strip()
+        disabled_tools = os.getenv("MCP_CATALOG_DISABLED_TOOLS", "").split(",") if os.getenv("MCP_CATALOG_DISABLED_TOOLS") else []
+        
+        # Get available servers first
+        available_servers = self._get_available_servers()
+        
+        # Parse enabled servers - handle "*" to mean all servers
+        if enabled_servers_env == "*":
+            enabled_servers = list(available_servers.keys())
+        elif enabled_servers_env:
+            enabled_servers = [s.strip() for s in enabled_servers_env.split(",") if s.strip()]
+        else:
+            enabled_servers = []
         
         # Parse disabled tools into server -> patterns mapping
         disabled_by_server = {}
@@ -502,12 +529,21 @@ class ConfigurationExporter:
                 if server not in disabled_by_server:
                     disabled_by_server[server] = []
                 disabled_by_server[server].append(pattern)
-        
-        available_servers = self._get_available_servers()
+            else:
+                # Handle simple tool names without server prefix
+                disabled_by_server[item] = ["*"]  # Disable all tools matching this name
         
         return {
-            "enabled_servers": [s for s in enabled_servers if s],
+            "enabled_servers": enabled_servers,
             "disabled_tools_by_server": disabled_by_server,
             "available_servers": list(available_servers.keys()),
-            "configuration_source": "environment_variables"
+            "configuration_source": "environment_variables",
+            "control_settings": {
+                "enabled_servers": enabled_servers_env,
+                "disabled_tools": os.getenv("MCP_CATALOG_DISABLED_TOOLS", ""),
+                "configuration_info": {
+                    "MCP_CATALOG_ENABLED_SERVERS": "Comma-separated list of servers to enable, or '*' for all",
+                    "MCP_CATALOG_DISABLED_TOOLS": "Comma-separated list of tools to disable (e.g., 'perplexity-ask_perplexity_ask,taskmaster-ai_research')"
+                }
+            }
         }
