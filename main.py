@@ -65,6 +65,26 @@ async def initialize_with_discovery():
     """Initialize catalog with pre-discovery for proxy architecture"""
     logger.info("🔍 Initializing MCP Catalog Server with proxy architecture...")
     
+    # Get configuration from environment
+    enabled_servers = os.getenv("MCP_CATALOG_ENABLED_SERVERS", "").strip()
+    disabled_tools = os.getenv("MCP_CATALOG_DISABLED_TOOLS", "").strip()
+    
+    # Parse enabled servers (comma-separated, or "*" for all)
+    if enabled_servers:
+        if enabled_servers == "*":
+            enabled_servers_list = None  # None means all servers
+            logger.info("📋 Server control: All servers enabled")
+        else:
+            enabled_servers_list = [s.strip() for s in enabled_servers.split(",") if s.strip()]
+            logger.info(f"📋 Server control: Only enabling {enabled_servers_list}")
+    else:
+        enabled_servers_list = None  # Default: all servers enabled
+        
+    # Parse disabled tools (comma-separated)
+    disabled_tools_list = [t.strip() for t in disabled_tools.split(",") if t.strip()] if disabled_tools else []
+    if disabled_tools_list:
+        logger.info(f"🚫 Tool control: Disabling tools {disabled_tools_list}")
+    
     try:
         from .subprocess_manager import get_subprocess_manager
         manager = get_subprocess_manager()
@@ -74,6 +94,10 @@ async def initialize_with_discovery():
         started_servers = []
         
         for server_name, server_config in registry.config.get("servers", {}).items():
+            # Check if server is enabled
+            if enabled_servers_list is not None and server_name not in enabled_servers_list:
+                logger.info(f"   ⏭️  Skipped {server_name}: not in enabled servers list")
+                continue
             req = registry.check_server_requirements(server_name)
             if req["ready"]:
                 try:
@@ -113,7 +137,7 @@ async def initialize_with_discovery():
         
         # 3. Register proxy tools with FastMCP
         logger.info("🔗 Registering proxy tools...")
-        proxy_tools_registered = register_proxy_tools(all_discovered_tools)
+        proxy_tools_registered = register_proxy_tools(all_discovered_tools, disabled_tools_list)
         
         logger.info("🎉 MCP Catalog Server initialization complete!")
         logger.info(f"   🚀 {len(started_servers)} servers running")
@@ -174,12 +198,14 @@ def transform_config_for_subprocess(server_config):
         "environment": env_vars
     }
 
-def register_proxy_tools(discovered_tools):
+def register_proxy_tools(discovered_tools, disabled_tools_list=None):
     """Register proxy tools with FastMCP that forward to subprocess servers"""
     from .subprocess_manager import get_subprocess_manager
     
     registered_count = 0
+    skipped_count = 0
     manager = get_subprocess_manager()
+    disabled_tools_list = disabled_tools_list or []
     
     for tool_info in discovered_tools:
         try:
@@ -189,6 +215,12 @@ def register_proxy_tools(discovered_tools):
             
             # Create unique tool name to avoid conflicts
             proxy_tool_name = f"{server_name}_{tool_name}"
+            
+            # Check if tool is disabled
+            if proxy_tool_name in disabled_tools_list or tool_name in disabled_tools_list:
+                logger.debug(f"   ⏭️  Skipped disabled tool: {proxy_tool_name}")
+                skipped_count += 1
+                continue
             
             # Create proxy function with closure to capture variables
             def create_proxy_tool(srv_name, tl_name):
@@ -226,6 +258,9 @@ def register_proxy_tools(discovered_tools):
             
         except Exception as e:
             logger.warning(f"   ❌ Failed to register proxy for {tool_info.get('name', 'unknown')}: {e}")
+    
+    if skipped_count > 0:
+        logger.info(f"   ⏭️  Skipped {skipped_count} disabled tools")
     
     return registered_count
 
@@ -413,7 +448,19 @@ def get_server_configuration():
     Returns:
         Current enabled servers, disabled tools, and available servers
     """
-    return config_exporter.get_current_configuration()
+    config = config_exporter.get_current_configuration()
+    
+    # Add current control settings
+    config["control_settings"] = {
+        "enabled_servers": os.getenv("MCP_CATALOG_ENABLED_SERVERS", "* (all)"),
+        "disabled_tools": os.getenv("MCP_CATALOG_DISABLED_TOOLS", "(none)"),
+        "configuration_info": {
+            "MCP_CATALOG_ENABLED_SERVERS": "Comma-separated list of servers to enable, or '*' for all",
+            "MCP_CATALOG_DISABLED_TOOLS": "Comma-separated list of tools to disable (e.g., 'perplexity-ask_perplexity_ask,taskmaster-ai_research')"
+        }
+    }
+    
+    return config
 
 # Initialize state variables for proxy
 logger.info("🚀 MCP Catalog ready - proxy initialization will happen during FastMCP startup")

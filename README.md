@@ -10,6 +10,7 @@ A dynamic catalog server for Model Context Protocol (MCP) that acts as a univers
 - 📦 **Multiple Installation Methods**: pip, uvx, Docker, or source
 - ⚙️ **Smart Configuration**: Hierarchical config with environment variables and auto-discovery
 - 🐳 **Production Ready**: Docker support for enterprise deployments
+- 🎛️ **Fine-Grained Control**: Enable/disable specific servers and tools via configuration
 
 ## Quick Start
 
@@ -96,6 +97,11 @@ export MCP_CATALOG_PYTHON=/path/to/python
 
 # Auto-discovery
 export MCP_CATALOG_AUTO_DISCOVER=true
+
+# Server and Tool Control
+export MCP_CATALOG_ENABLED_SERVERS=context7,perplexity-ask  # Only enable specific servers
+export MCP_CATALOG_ENABLED_SERVERS=*                       # Enable all servers (default)
+export MCP_CATALOG_DISABLED_TOOLS=taskmaster-ai_research,perplexity-ask_perplexity_ask  # Disable specific tools
 ```
 
 ### Example Configuration
@@ -175,6 +181,72 @@ The catalog server provides built-in tools for management:
 - `search_tools(query)` - Search for tools by keyword
 - `get_tool_details(tool_name)` - Get detailed tool documentation
 - `refresh_configuration()` - Reload configuration from local registry
+
+## Server and Tool Control
+
+The MCP Catalog Server provides fine-grained control over which servers and tools are exposed to Claude Desktop.
+
+### Enabling Specific Servers
+
+Control which servers are active using the `MCP_CATALOG_ENABLED_SERVERS` environment variable:
+
+```bash
+# Enable only specific servers
+export MCP_CATALOG_ENABLED_SERVERS=context7,perplexity-ask,taskmaster-ai
+
+# Enable all servers (default)
+export MCP_CATALOG_ENABLED_SERVERS=*
+```
+
+Or in your `.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "mcp-catalog": {
+      "command": "python",
+      "args": ["-m", "mcp_catalog_server"],
+      "env": {
+        "MCP_CATALOG_ENABLED_SERVERS": "context7,perplexity-ask"
+      }
+    }
+  }
+}
+```
+
+### Disabling Specific Tools
+
+Disable problematic or unwanted tools using the `MCP_CATALOG_DISABLED_TOOLS` environment variable:
+
+```bash
+# Disable specific tools (use the full proxy name or just the tool name)
+export MCP_CATALOG_DISABLED_TOOLS=taskmaster-ai_research,perplexity-ask_perplexity_ask
+
+# Or just the tool names
+export MCP_CATALOG_DISABLED_TOOLS=research,perplexity_ask
+```
+
+### Checking Current Configuration
+
+Use the `get_server_configuration` tool to see current settings:
+
+```
+Tool: get_server_configuration
+
+Returns:
+{
+  "control_settings": {
+    "enabled_servers": "context7,perplexity-ask",
+    "disabled_tools": "research",
+    "configuration_info": {
+      "MCP_CATALOG_ENABLED_SERVERS": "Comma-separated list of servers to enable, or '*' for all",
+      "MCP_CATALOG_DISABLED_TOOLS": "Comma-separated list of tools to disable"
+    }
+  },
+  "available_servers": [...],
+  "enabled_servers": [...]
+}
+```
 
 ## Development
 
