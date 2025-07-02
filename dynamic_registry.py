@@ -67,9 +67,26 @@ class DynamicToolRegistry:
         manager = get_subprocess_manager()
         discovery_errors = []
         
+        # Get enabled servers from environment
+        import os
+        enabled_servers_env = os.getenv("ENABLED_SERVERS", "")
+        if enabled_servers_env:
+            # If ENABLED_SERVERS is set, only process those servers
+            enabled_servers = [s.strip() for s in enabled_servers_env.split(",") if s.strip()]
+            logger.info(f"ENABLED_SERVERS set: {enabled_servers}")
+        else:
+            # If not set, all servers are enabled by default
+            enabled_servers = None
+            logger.info("ENABLED_SERVERS not set - all servers enabled by default")
+        
         for server_name, server_config in self.config.get("servers", {}).items():
             try:
                 logger.info(f"🔍 Processing server: {server_name}")
+                
+                # Check if server is enabled
+                if enabled_servers is not None and server_name not in enabled_servers:
+                    logger.info(f"   ⏸️  Skipping {server_name} - not in ENABLED_SERVERS")
+                    continue
                 
                 # Check if server has required environment variables
                 requirements = self.check_server_requirements(server_name)
@@ -273,9 +290,40 @@ class DynamicToolRegistry:
         registered = 0
         skipped = 0
         
+        # Get configuration from environment
+        import os
+        enabled_servers_env = os.getenv("ENABLED_SERVERS", "")
+        enabled_servers = [s.strip() for s in enabled_servers_env.split(",") if s.strip()] if enabled_servers_env else None
+        
+        disabled_tools_env = os.getenv("DISABLED_TOOLS", "")
+        disabled_patterns = {}
+        if disabled_tools_env:
+            for item in disabled_tools_env.split(","):
+                item = item.strip()
+                if ":" in item:
+                    server, pattern = item.split(":", 1)
+                    if server not in disabled_patterns:
+                        disabled_patterns[server] = []
+                    disabled_patterns[server].append(pattern)
+        
         for tool_name in self.tool_map:
             # Check if server is ready
             server_name = self.tool_map[tool_name]
+            server_config = self.config["servers"][server_name]
+            
+            # Check if server is enabled
+            if enabled_servers is not None and server_name not in enabled_servers:
+                logger.info(f"Skipping {tool_name} - server {server_name} not in ENABLED_SERVERS")
+                skipped += 1
+                continue
+            
+            # Check if tool is disabled
+            if server_name in disabled_patterns:
+                if any(pattern in tool_name for pattern in disabled_patterns[server_name]):
+                    logger.info(f"Skipping {tool_name} - tool is disabled by pattern in DISABLED_TOOLS")
+                    skipped += 1
+                    continue
+            
             requirements = self.check_server_requirements(server_name)
             
             if not requirements["ready"]:
@@ -312,11 +360,9 @@ class DynamicToolRegistry:
                             if "kwargs" in kwargs and isinstance(kwargs["kwargs"], dict):
                                 # Claude is passing: {"kwargs": {"id": "50.2", "status": "done", ...}}
                                 actual_args = kwargs["kwargs"]
-                                logger.info(f"Extracted kwargs for {display_name}: {actual_args}")
                             else:
                                 # Direct parameters: {"id": "50.2", "status": "done", ...}
                                 actual_args = kwargs
-                                logger.info(f"Using direct args for {display_name}: {actual_args}")
                             
                             # Execute via subprocess
                             result = await self._execute_npx_tool(server_name, tool_name, actual_args)
@@ -334,14 +380,11 @@ class DynamicToolRegistry:
                 wrapper_func = create_tool_wrapper()
                 
                 # Register with FastMCP using proper API - display_name is what LLM sees
-                logger.info(f"🔧 Attempting to register tool: {display_name}")
-                
                 decorated_func = mcp_instance.tool(
                     name=display_name,
                     description=tool_description
                 )(wrapper_func)
                 
-                logger.info(f"✅ Successfully registered tool: {display_name}")
                 registered += 1
                 
             except Exception as e:

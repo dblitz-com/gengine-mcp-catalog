@@ -20,6 +20,7 @@ from mcp.server.fastmcp import FastMCP
 # Import our modules
 from .config_generator import MCPConfigGenerator
 from .dynamic_registry import DynamicToolRegistry
+from .registry_sync import RegistrySyncManager, ConfigurationExporter
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -96,6 +97,11 @@ load_environment()
 # Initialize registry FIRST
 registry = initialize_catalog()
 
+# Initialize managers
+configs_dir = Path(__file__).parent / "configs"
+registry_sync_manager = RegistrySyncManager(configs_dir)
+config_exporter = ConfigurationExporter(configs_dir)
+
 # Initialize FastMCP server
 mcp = FastMCP(name="mcp-catalog", version="1.0.0")
 
@@ -147,6 +153,93 @@ async def refresh_tools():
     except Exception as e:
         logger.error(f"❌ Error refreshing tools: {e}")
         return {"status": "error", "message": str(e)}
+
+# Registry browsing and management tools
+@mcp.tool()
+async def browse_official_registry(
+    search_query: str = None,
+    categories: list = None,
+    limit: int = 20
+):
+    """
+    Browse available MCP servers from the official registry
+    
+    Args:
+        search_query: Optional search term to filter servers
+        categories: Optional list of categories to filter by
+        limit: Maximum number of results to return (default: 20)
+    
+    Returns:
+        List of available servers with metadata
+    """
+    return await registry_sync_manager.browse_official_registry(
+        search_query=search_query,
+        categories_filter=categories,
+        limit=limit
+    )
+
+@mcp.tool()
+async def add_server_from_registry(
+    server_id: str
+):
+    """
+    Add a specific server from the official MCP registry
+    
+    Args:
+        server_id: The registry ID of the server (e.g., "io.github.modelcontextprotocol/server-github")
+    
+    Returns:
+        Result of the add operation including discovered tools
+    """
+    result = await registry_sync_manager.add_server_from_registry(
+        server_id=server_id,
+        test_connectivity=True
+    )
+    
+    # If successful, refresh our tool registry
+    if result.get("status") == "success":
+        await refresh_tools()
+    
+    return result
+
+@mcp.tool()
+def suggest_enable_servers(server_names: list):
+    """
+    Generate configuration to enable specific MCP servers
+    
+    Args:
+        server_names: List of server names to enable
+    
+    Returns:
+        Configuration snippet and instructions for the user
+    """
+    return config_exporter.generate_enable_config(server_names)
+
+@mcp.tool()
+def suggest_disable_tools(
+    tool_patterns: dict
+):
+    """
+    Generate configuration to disable specific tools
+    
+    Args:
+        tool_patterns: Dictionary mapping server names to lists of tool patterns
+                      Example: {"github": ["delete_*"], "taskmaster": ["debug_*"]}
+    
+    Returns:
+        Configuration snippet and instructions for the user
+    """
+    return config_exporter.generate_disable_tools_config(tool_patterns)
+
+@mcp.tool()
+def get_server_configuration():
+    """
+    Get current server configuration from environment variables
+    
+    Returns:
+        Current enabled servers, disabled tools, and available servers
+    """
+    return config_exporter.get_current_configuration()
 
 # Run pre-discovery initialization synchronously during startup
 logger.info("🚀 Starting pre-discovery initialization...")
