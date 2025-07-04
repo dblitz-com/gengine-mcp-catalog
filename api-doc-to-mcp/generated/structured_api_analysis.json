@@ -1,0 +1,2671 @@
+{
+  "site_name": "LangGraph",
+  "base_url": "https://langchain-ai.github.io/langgraph",
+  "total_modules": 15,
+  "total_elements": 23429,
+  "callable_elements": 18562,
+  "global_keywords": {
+    "the": 7,
+    "get": 7,
+    "bases": 6,
+    "from": 6,
+    "state": 5,
+    "graph": 5,
+    "node": 4,
+    "config": 4,
+    "none": 4,
+    "init": 4,
+    "pregel": 4,
+    "edge": 3,
+    "generic": 3,
+    "message": 3,
+    "schema": 3,
+    "type": 3,
+    "multiple": 3,
+    "list": 3,
+    "aget": 3,
+    "create": 3,
+    "args": 3,
+    "stategraph": 2,
+    "astream": 2,
+    "stream": 2,
+    "add": 2,
+    "statet": 2,
+    "sequence": 2,
+    "inputt": 2,
+    "outputt": 2,
+    "compile": 2,
+    "conditional": 2,
+    "single": 2,
+    "task": 2,
+    "initialize": 2,
+    "any": 2,
+    "langgraph": 2,
+    "input": 2,
+    "this": 2,
+    "entrypoint": 2,
+    "basecheckpointsaver": 2,
+    "use": 2,
+    "store": 2,
+    "basecache": 2,
+    "and": 2,
+    "model": 2,
+    "pregelprotocol": 2,
+    "specs": 2,
+    "checkpoint": 2,
+    "classes": 2,
+    "last": 2
+  },
+  "workflow_categories": {
+    "graph_construction": 126,
+    "execution_control": 10,
+    "state_management": 20,
+    "checkpointing": 11,
+    "functional_api": 2,
+    "tool_integration": 5,
+    "types_schemas": 2,
+    "channels": 5,
+    "configuration": 2
+  },
+  "workflow_distribution": {
+    "graph_construction": [
+      "Graph Definitions¶::State",
+      "Graph Definitions¶::State",
+      "Graph Definitions¶::State",
+      "Graph Definitions¶::State",
+      "Graph Definitions¶::State",
+      "Graph Definitions¶::State",
+      "Graph Definitions¶::State",
+      "Graph Definitions¶::add_node",
+      "Graph Definitions¶::State",
+      "Graph Definitions¶::add_edge",
+      "Graph Definitions¶::add_conditional_edges",
+      "Graph Definitions¶::add_sequence",
+      "Graph Definitions¶::compile",
+      "Types¶::OverallState",
+      "Types¶::OverallState",
+      "Types¶::OverallState",
+      "Types¶::OverallState",
+      "Types¶::OverallState",
+      "Types¶::OverallState",
+      "Types¶::OverallState",
+      "Types¶::OverallState",
+      "Types¶::OverallState",
+      "Types¶::OverallState",
+      "Types¶::OverallState",
+      "Types¶::OverallState",
+      "Types¶::OverallState",
+      "Types¶::OverallState",
+      "Types¶::OverallState",
+      "Types¶::OverallState",
+      "Types¶::OverallState",
+      "Types¶::OverallState",
+      "Types¶::OverallState",
+      "Types¶::OverallState",
+      "Functional::signature",
+      "Pregel¶::build",
+      "Config::State",
+      "Config::State",
+      "Config::State",
+      "Config::State",
+      "Config::State",
+      "Config::State",
+      "Config::State",
+      "Config::State",
+      "Config::State",
+      "Config::State",
+      "Config::State",
+      "Config::State",
+      "Config::State",
+      "Config::State",
+      "Config::State",
+      "Config::State",
+      "Config::State",
+      "Config::State",
+      "Config::State",
+      "Errors¶::compile",
+      "Errors¶::compile",
+      "Errors¶::compile",
+      "Errors¶::compile",
+      "Errors¶::compile",
+      "Errors¶::compile",
+      "Constants::intern",
+      "Constants::intern",
+      "Constants::intern",
+      "Constants::intern",
+      "Constants::intern",
+      "Agents¶::State",
+      "Agents¶::State",
+      "Agents¶::State",
+      "Agents¶::State",
+      "Agents¶::State",
+      "Agents¶::State",
+      "Agents¶::State",
+      "Agents¶::State",
+      "Agents¶::State",
+      "Agents¶::State",
+      "Agents¶::State",
+      "Agents¶::State",
+      "Agents¶::State",
+      "Agents¶::State",
+      "Agents¶::State",
+      "Agents¶::State",
+      "Agents¶::State",
+      "Agents¶::State",
+      "Agents¶::State",
+      "LangGraph Supervisor¶::create_supervisor",
+      "LangGraph Supervisor¶::create_handoff_tool",
+      "LangGraph Supervisor¶::create_forward_message_tool",
+      "LangGraph Supervisor¶::create_supervisor",
+      "LangGraph Supervisor¶::create_handoff_tool",
+      "LangGraph Supervisor¶::create_forward_message_tool",
+      "LangGraph Supervisor¶::create_supervisor",
+      "LangGraph Supervisor¶::create_supervisor",
+      "LangGraph Supervisor¶::create_supervisor",
+      "LangGraph Supervisor¶::create_supervisor",
+      "LangGraph Supervisor¶::create_supervisor",
+      "LangGraph Supervisor¶::create_supervisor",
+      "LangGraph Supervisor¶::create_supervisor",
+      "LangGraph Supervisor¶::create_supervisor",
+      "LangGraph Supervisor¶::create_supervisor",
+      "LangGraph Supervisor¶::create_supervisor",
+      "LangGraph Supervisor¶::create_supervisor",
+      "LangGraph Supervisor¶::create_supervisor",
+      "LangGraph Supervisor¶::create_supervisor",
+      "LangGraph Supervisor¶::create_supervisor",
+      "LangGraph Swarm¶::create_swarm",
+      "LangGraph Swarm¶::add_active_agent_router",
+      "LangGraph Swarm¶::create_handoff_tool",
+      "LangGraph Swarm¶::create_swarm",
+      "LangGraph Swarm¶::add_active_agent_router",
+      "LangGraph Swarm¶::create_handoff_tool",
+      "LangGraph Swarm¶::create_swarm",
+      "LangGraph Swarm¶::create_swarm",
+      "LangGraph Swarm¶::create_swarm",
+      "LangGraph Swarm¶::create_swarm",
+      "LangGraph Swarm¶::create_swarm",
+      "LangGraph Swarm¶::create_swarm",
+      "LangGraph Swarm¶::create_swarm",
+      "LangGraph Swarm¶::create_swarm",
+      "LangGraph Swarm¶::create_swarm",
+      "LangGraph Swarm¶::create_swarm",
+      "LangGraph Swarm¶::create_swarm",
+      "LangGraph Swarm¶::create_swarm",
+      "RemoteGraph¶::Args",
+      "RemoteGraph¶::get_graph",
+      "RemoteGraph¶::aget_graph",
+      "RemoteGraph¶::aget_state"
+    ],
+    "execution_control": [
+      "Graph Definitions¶::stream",
+      "Graph Definitions¶::invoke",
+      "Pregel¶::channels",
+      "Pregel¶::channels",
+      "Pregel¶::channels",
+      "Pregel¶::channels",
+      "Pregel¶::channels",
+      "Pregel¶::channels",
+      "Pregel¶::channels",
+      "Pregel¶::stream"
+    ],
+    "state_management": [
+      "Graph Definitions¶::get_state",
+      "Checkpointers¶::get",
+      "Checkpointers¶::get_tuple",
+      "Caching::get",
+      "Caching::set",
+      "Caching::get",
+      "Caching::set",
+      "Caching::get",
+      "Caching::set",
+      "Config::get_store",
+      "Channels¶::get",
+      "Channels¶::update",
+      "LangChain Model Context Protocol (MCP) Adapters¶::get_tools",
+      "LangChain Model Context Protocol (MCP) Adapters¶::get_prompt",
+      "LangChain Model Context Protocol (MCP) Adapters¶::get_resources",
+      "LangChain Model Context Protocol (MCP) Adapters¶::get_tools",
+      "LangChain Model Context Protocol (MCP) Adapters¶::get_prompt",
+      "LangChain Model Context Protocol (MCP) Adapters¶::get_resources",
+      "RemoteGraph¶::get_state",
+      "RemoteGraph¶::get_state_history"
+    ],
+    "checkpointing": [
+      "Functional::save",
+      "Functional::save",
+      "Checkpointers¶::Checkpoint",
+      "Channels¶::checkpoint",
+      "Channels¶::from_checkpoint",
+      "LangChain Model Context Protocol (MCP) Adapters¶::load_mcp_tools",
+      "LangChain Model Context Protocol (MCP) Adapters¶::load_mcp_prompt",
+      "LangChain Model Context Protocol (MCP) Adapters¶::load_mcp_resources",
+      "LangChain Model Context Protocol (MCP) Adapters¶::load_mcp_tools",
+      "LangChain Model Context Protocol (MCP) Adapters¶::load_mcp_prompt",
+      "LangChain Model Context Protocol (MCP) Adapters¶::load_mcp_resources"
+    ],
+    "functional_api": [
+      "Functional::task",
+      "Functional::task"
+    ],
+    "tool_integration": [
+      "Functional::signature",
+      "Functional::signature",
+      "Functional::signature",
+      "RemoteGraph¶::input_schema",
+      "RemoteGraph¶::output_schema"
+    ],
+    "types_schemas": [
+      "Functional::__init__",
+      "RemoteGraph¶::Args"
+    ],
+    "channels": [
+      "Pregel¶::subscribe_only",
+      "Pregel¶::subscribe_to",
+      "Checkpointers¶::channel_values",
+      "Checkpointers¶::channel_versions",
+      "Channels¶::Topic"
+    ],
+    "configuration": [
+      "Checkpointers¶::config_specs",
+      "RemoteGraph¶::config_specs"
+    ]
+  },
+  "modules": [
+    {
+      "name": "Graph Definitions¶",
+      "description": "Build reliable, stateful AI systems, without giving up control",
+      "source_url": "https://langchain-ai.github.io/langgraph/reference/graphs/",
+      "total_elements": 20,
+      "callable_elements": 20,
+      "workflow_focus": "graph_construction",
+      "primary_keywords": [
+        "state",
+        "new",
+        "stategraph",
+        "ainvoke",
+        "astream",
+        "merges",
+        "messages",
+        "bases",
+        "lists",
+        "stream",
+        "existing",
+        "add",
+        "statet",
+        "sequence",
+        "compiledstategraph",
+        "inputt",
+        "the",
+        "outputt",
+        "get",
+        "graph",
+        "two",
+        "edge",
+        "updating",
+        "invoke",
+        "node",
+        "compile",
+        "edges",
+        "conditional",
+        "generic"
+      ],
+      "elements_by_category": {
+        "graph_construction": [
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Bases: Generic[StateT, InputT, OutputT]"
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Add a new node to the state graph."
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Merges two lists of messages, updating existing messages by ID."
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Bases: Generic[StateT, InputT, OutputT]"
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Bases: Generic[StateT, InputT, OutputT]"
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Add a new node to the state graph."
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Add a new node to the state graph."
+          },
+          {
+            "name": "add_node",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Add a new node to the state graph."
+          },
+          {
+            "name": "add_edge",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "add_conditional_edges",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "add_sequence",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "compile",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ],
+        "uncategorized": [
+          {
+            "name": "StateGraph",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "CompiledStateGraph",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "astream",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "ainvoke",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ],
+        "execution_control": [
+          {
+            "name": "stream",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "invoke",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ],
+        "state_management": [
+          {
+            "name": "get_state",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "Types¶",
+      "description": "Build reliable, stateful AI systems, without giving up control",
+      "source_url": "https://langchain-ai.github.io/langgraph/reference/types/",
+      "total_elements": 20,
+      "callable_elements": 20,
+      "workflow_focus": "graph_construction",
+      "primary_keywords": [
+        "graph",
+        "message",
+        "send",
+        "node",
+        "overallstate",
+        "specific",
+        "packet",
+        "the"
+      ],
+      "elements_by_category": {
+        "graph_construction": [
+          {
+            "name": "OverallState",
+            "type": "class",
+            "is_callable": true,
+            "description": "A message or packet to send to a specific node in the graph."
+          },
+          {
+            "name": "OverallState",
+            "type": "class",
+            "is_callable": true,
+            "description": "A message or packet to send to a specific node in the graph."
+          },
+          {
+            "name": "OverallState",
+            "type": "class",
+            "is_callable": true,
+            "description": "A message or packet to send to a specific node in the graph."
+          },
+          {
+            "name": "OverallState",
+            "type": "class",
+            "is_callable": true,
+            "description": "A message or packet to send to a specific node in the graph."
+          },
+          {
+            "name": "OverallState",
+            "type": "class",
+            "is_callable": true,
+            "description": "A message or packet to send to a specific node in the graph."
+          },
+          {
+            "name": "OverallState",
+            "type": "class",
+            "is_callable": true,
+            "description": "A message or packet to send to a specific node in the graph."
+          },
+          {
+            "name": "OverallState",
+            "type": "class",
+            "is_callable": true,
+            "description": "A message or packet to send to a specific node in the graph."
+          },
+          {
+            "name": "OverallState",
+            "type": "class",
+            "is_callable": true,
+            "description": "A message or packet to send to a specific node in the graph."
+          },
+          {
+            "name": "OverallState",
+            "type": "class",
+            "is_callable": true,
+            "description": "A message or packet to send to a specific node in the graph."
+          },
+          {
+            "name": "OverallState",
+            "type": "class",
+            "is_callable": true,
+            "description": "A message or packet to send to a specific node in the graph."
+          },
+          {
+            "name": "OverallState",
+            "type": "class",
+            "is_callable": true,
+            "description": "A message or packet to send to a specific node in the graph."
+          },
+          {
+            "name": "OverallState",
+            "type": "class",
+            "is_callable": true,
+            "description": "A message or packet to send to a specific node in the graph."
+          },
+          {
+            "name": "OverallState",
+            "type": "class",
+            "is_callable": true,
+            "description": "A message or packet to send to a specific node in the graph."
+          },
+          {
+            "name": "OverallState",
+            "type": "class",
+            "is_callable": true,
+            "description": "A message or packet to send to a specific node in the graph."
+          },
+          {
+            "name": "OverallState",
+            "type": "class",
+            "is_callable": true,
+            "description": "A message or packet to send to a specific node in the graph."
+          },
+          {
+            "name": "OverallState",
+            "type": "class",
+            "is_callable": true,
+            "description": "A message or packet to send to a specific node in the graph."
+          },
+          {
+            "name": "OverallState",
+            "type": "class",
+            "is_callable": true,
+            "description": "A message or packet to send to a specific node in the graph."
+          },
+          {
+            "name": "OverallState",
+            "type": "class",
+            "is_callable": true,
+            "description": "A message or packet to send to a specific node in the graph."
+          },
+          {
+            "name": "OverallState",
+            "type": "class",
+            "is_callable": true,
+            "description": "A message or packet to send to a specific node in the graph."
+          },
+          {
+            "name": "OverallState",
+            "type": "class",
+            "is_callable": true,
+            "description": "A message or packet to send to a specific node in the graph."
+          }
+        ]
+      }
+    },
+    {
+      "name": "Functional",
+      "description": "Build reliable, stateful AI systems, without giving up control",
+      "source_url": "https://langchain-ai.github.io/langgraph/reference/func/",
+      "total_elements": 20,
+      "callable_elements": 20,
+      "workflow_focus": "tool_integration",
+      "primary_keywords": [
+        "can",
+        "single",
+        "pass",
+        "value",
+        "parameter",
+        "retrypolicy",
+        "call",
+        "accept",
+        "function",
+        "which",
+        "sequence",
+        "decorator",
+        "the",
+        "policy",
+        "signature",
+        "dictionary",
+        "config",
+        "task",
+        "schema",
+        "initialize",
+        "basestore",
+        "generic",
+        "type",
+        "none",
+        "any",
+        "langgraph",
+        "decorated",
+        "retry",
+        "input",
+        "parameters",
+        "bases",
+        "cachepolicy",
+        "multiple",
+        "final",
+        "this",
+        "serves",
+        "entrypoint",
+        "save",
+        "using",
+        "basecheckpointsaver",
+        "must",
+        "checkpointer",
+        "init",
+        "use",
+        "store",
+        "basecache",
+        "cache",
+        "define",
+        "memorysaver",
+        "workflow"
+      ],
+      "elements_by_category": {
+        "uncategorized": [
+          {
+            "name": "entrypoint",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "final",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "value",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "__init__",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "__call__",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "entrypoint",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "final",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "value",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "__init__",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "__call__",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "entrypoint",
+            "type": "function",
+            "is_callable": true,
+            "description": "Bases: Generic[R, S]"
+          }
+        ],
+        "checkpointing": [
+          {
+            "name": "save",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "save",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ],
+        "functional_api": [
+          {
+            "name": "task",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "task",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ],
+        "graph_construction": [
+          {
+            "name": "signature",
+            "type": "function",
+            "is_callable": true,
+            "description": "Define a LangGraph workflow using the entrypoint decorator."
+          }
+        ],
+        "tool_integration": [
+          {
+            "name": "signature",
+            "type": "function",
+            "is_callable": true,
+            "description": "The decorated function must accept a single parameter, which serves as the input\nto the function. This input parameter can be of any type. Use a dictionary\nto pass multiple parameters to the function."
+          },
+          {
+            "name": "signature",
+            "type": "function",
+            "is_callable": true,
+            "description": "The decorated function must accept a single parameter, which serves as the input\nto the function. This input parameter can be of any type. Use a dictionary\nto pass multiple parameters to the function."
+          },
+          {
+            "name": "signature",
+            "type": "function",
+            "is_callable": true,
+            "description": "The decorated function must accept a single parameter, which serves as the input\nto the function. This input parameter can be of any type. Use a dictionary\nto pass multiple parameters to the function."
+          }
+        ],
+        "types_schemas": [
+          {
+            "name": "__init__",
+            "type": "function",
+            "is_callable": true,
+            "description": "Initialize the entrypoint decorator."
+          }
+        ]
+      }
+    },
+    {
+      "name": "Pregel¶",
+      "description": "Build reliable, stateful AI systems, without giving up control",
+      "source_url": "https://langchain-ai.github.io/langgraph/reference/pregel/",
+      "total_elements": 20,
+      "callable_elements": 20,
+      "workflow_focus": "execution_control",
+      "primary_keywords": [
+        "single",
+        "following",
+        "into",
+        "read",
+        "organizes",
+        "bulk",
+        "from",
+        "astream",
+        "stream",
+        "channels",
+        "subscribe",
+        "and",
+        "statet",
+        "inputt",
+        "the",
+        "pregel",
+        "meta",
+        "build",
+        "generic",
+        "synchronous",
+        "combines",
+        "application",
+        "model",
+        "bases",
+        "parallel",
+        "multiple",
+        "write",
+        "data",
+        "outputt",
+        "nodebuilder",
+        "execution",
+        "pregelprotocol",
+        "only",
+        "algorithm",
+        "actors",
+        "steps"
+      ],
+      "elements_by_category": {
+        "uncategorized": [
+          {
+            "name": "channels",
+            "type": "class",
+            "is_callable": true,
+            "description": "Bases: PregelProtocol[StateT, InputT, OutputT], Generic[StateT, InputT, OutputT]"
+          },
+          {
+            "name": "NodeBuilder",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "read_from",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "do",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "write_to",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "meta",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "channels",
+            "type": "class",
+            "is_callable": true,
+            "description": "Bases: PregelProtocol[StateT, InputT, OutputT], Generic[StateT, InputT, OutputT]"
+          },
+          {
+            "name": "Pregel",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "astream",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ],
+        "execution_control": [
+          {
+            "name": "channels",
+            "type": "class",
+            "is_callable": true,
+            "description": "Pregel combines actors\nand channels into a single application.\nActors read data from channels and write data to channels.\nPregel organizes the execution of the application into multiple steps,\nfollowing the Pregel Algorithm/Bulk Synchronous Parallel model."
+          },
+          {
+            "name": "channels",
+            "type": "class",
+            "is_callable": true,
+            "description": "Pregel combines actors\nand channels into a single application.\nActors read data from channels and write data to channels.\nPregel organizes the execution of the application into multiple steps,\nfollowing the Pregel Algorithm/Bulk Synchronous Parallel model."
+          },
+          {
+            "name": "channels",
+            "type": "class",
+            "is_callable": true,
+            "description": "Pregel combines actors\nand channels into a single application.\nActors read data from channels and write data to channels.\nPregel organizes the execution of the application into multiple steps,\nfollowing the Pregel Algorithm/Bulk Synchronous Parallel model."
+          },
+          {
+            "name": "channels",
+            "type": "class",
+            "is_callable": true,
+            "description": "Pregel combines actors\nand channels into a single application.\nActors read data from channels and write data to channels.\nPregel organizes the execution of the application into multiple steps,\nfollowing the Pregel Algorithm/Bulk Synchronous Parallel model."
+          },
+          {
+            "name": "channels",
+            "type": "class",
+            "is_callable": true,
+            "description": "Pregel combines actors\nand channels into a single application.\nActors read data from channels and write data to channels.\nPregel organizes the execution of the application into multiple steps,\nfollowing the Pregel Algorithm/Bulk Synchronous Parallel model."
+          },
+          {
+            "name": "channels",
+            "type": "class",
+            "is_callable": true,
+            "description": "Pregel combines actors\nand channels into a single application.\nActors read data from channels and write data to channels.\nPregel organizes the execution of the application into multiple steps,\nfollowing the Pregel Algorithm/Bulk Synchronous Parallel model."
+          },
+          {
+            "name": "channels",
+            "type": "class",
+            "is_callable": true,
+            "description": "Pregel combines actors\nand channels into a single application.\nActors read data from channels and write data to channels.\nPregel organizes the execution of the application into multiple steps,\nfollowing the Pregel Algorithm/Bulk Synchronous Parallel model."
+          },
+          {
+            "name": "stream",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ],
+        "channels": [
+          {
+            "name": "subscribe_only",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "subscribe_to",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ],
+        "graph_construction": [
+          {
+            "name": "build",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "Checkpointers¶",
+      "description": "Build reliable, stateful AI systems, without giving up control",
+      "source_url": "https://langchain-ai.github.io/langgraph/reference/checkpoints/",
+      "total_elements": 20,
+      "callable_elements": 20,
+      "workflow_focus": "state_management",
+      "primary_keywords": [
+        "parents",
+        "values",
+        "specs",
+        "put",
+        "list",
+        "checkpoint",
+        "checkpointmetadata",
+        "channel",
+        "thread",
+        "get",
+        "versions",
+        "writes",
+        "basecheckpointsaver",
+        "seen",
+        "tuple",
+        "config",
+        "delete",
+        "step",
+        "source",
+        "aget"
+      ],
+      "elements_by_category": {
+        "uncategorized": [
+          {
+            "name": "CheckpointMetadata",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "source",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "step",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "parents",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "v",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "id",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "ts",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "versions_seen",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "BaseCheckpointSaver",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "list",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "put",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "put_writes",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "delete_thread",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "aget",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ],
+        "checkpointing": [
+          {
+            "name": "Checkpoint",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ],
+        "channels": [
+          {
+            "name": "channel_values",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "channel_versions",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ],
+        "configuration": [
+          {
+            "name": "config_specs",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ],
+        "state_management": [
+          {
+            "name": "get",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "get_tuple",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "Caching",
+      "description": "Build reliable, stateful AI systems, without giving up control",
+      "source_url": "https://langchain-ai.github.io/langgraph/reference/cache/",
+      "total_elements": 20,
+      "callable_elements": 20,
+      "workflow_focus": "state_management",
+      "primary_keywords": [
+        "aset",
+        "aclear",
+        "sqlitecache",
+        "init",
+        "set",
+        "inmemorycache",
+        "basecache",
+        "aget",
+        "clear",
+        "get"
+      ],
+      "elements_by_category": {
+        "uncategorized": [
+          {
+            "name": "BaseCache",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "__init__",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "aget",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "aset",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "clear",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "aclear",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "InMemoryCache",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "aget",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "aset",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "clear",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "aclear",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "SqliteCache",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "__init__",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "aget",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ],
+        "state_management": [
+          {
+            "name": "get",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "set",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "get",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "set",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "get",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "set",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "Config",
+      "description": "Build reliable, stateful AI systems, without giving up control",
+      "source_url": "https://langchain-ai.github.io/langgraph/reference/config/",
+      "total_elements": 20,
+      "callable_elements": 20,
+      "workflow_focus": "graph_construction",
+      "primary_keywords": [
+        "state",
+        "langgraph",
+        "inside",
+        "functions",
+        "from",
+        "runtime",
+        "get",
+        "graph",
+        "task",
+        "entrypoint",
+        "store",
+        "streamwriter",
+        "access",
+        "node"
+      ],
+      "elements_by_category": {
+        "graph_construction": [
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Access LangGraph store from inside a graph node or entrypoint task at runtime."
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Access LangGraph store from inside a graph node or entrypoint task at runtime."
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Access LangGraph store from inside a graph node or entrypoint task at runtime."
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Access LangGraph store from inside a graph node or entrypoint task at runtime."
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Access LangGraph store from inside a graph node or entrypoint task at runtime."
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Access LangGraph store from inside a graph node or entrypoint task at runtime."
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Access LangGraph store from inside a graph node or entrypoint task at runtime."
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Access LangGraph store from inside a graph node or entrypoint task at runtime."
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Access LangGraph store from inside a graph node or entrypoint task at runtime."
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Access LangGraph store from inside a graph node or entrypoint task at runtime."
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Access LangGraph store from inside a graph node or entrypoint task at runtime."
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Access LangGraph store from inside a graph node or entrypoint task at runtime."
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Access LangGraph StreamWriter from inside a graph node or entrypoint task at runtime."
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Functions:"
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Functions:"
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Access LangGraph store from inside a graph node or entrypoint task at runtime."
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Access LangGraph store from inside a graph node or entrypoint task at runtime."
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Access LangGraph store from inside a graph node or entrypoint task at runtime."
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Access LangGraph StreamWriter from inside a graph node or entrypoint task at runtime."
+          }
+        ],
+        "state_management": [
+          {
+            "name": "get_store",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "Errors¶",
+      "description": "Build reliable, stateful AI systems, without giving up control",
+      "source_url": "https://langchain-ai.github.io/langgraph/reference/errors/",
+      "total_elements": 20,
+      "callable_elements": 20,
+      "workflow_focus": "graph_construction",
+      "primary_keywords": [
+        "graphrecursionerror",
+        "graphinterrupt",
+        "invalidupdateerror",
+        "nodeinterrupt",
+        "bases",
+        "compile",
+        "classes",
+        "recursionerror",
+        "tasknotfound",
+        "emptyinputerror"
+      ],
+      "elements_by_category": {
+        "uncategorized": [
+          {
+            "name": "GraphRecursionError",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "InvalidUpdateError",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "GraphInterrupt",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "NodeInterrupt",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "EmptyInputError",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "TaskNotFound",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "GraphRecursionError",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "InvalidUpdateError",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "GraphInterrupt",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "NodeInterrupt",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "EmptyInputError",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "TaskNotFound",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "GraphRecursionError",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "InvalidUpdateError",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          }
+        ],
+        "graph_construction": [
+          {
+            "name": "compile",
+            "type": "function",
+            "is_callable": true,
+            "description": "Bases: RecursionError"
+          },
+          {
+            "name": "compile",
+            "type": "function",
+            "is_callable": true,
+            "description": "Classes:"
+          },
+          {
+            "name": "compile",
+            "type": "function",
+            "is_callable": true,
+            "description": "Classes:"
+          },
+          {
+            "name": "compile",
+            "type": "function",
+            "is_callable": true,
+            "description": "Bases: RecursionError"
+          },
+          {
+            "name": "compile",
+            "type": "function",
+            "is_callable": true,
+            "description": "Bases: RecursionError"
+          },
+          {
+            "name": "compile",
+            "type": "function",
+            "is_callable": true,
+            "description": "Bases: RecursionError"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Constants",
+      "description": "Build reliable, stateful AI systems, without giving up control",
+      "source_url": "https://langchain-ai.github.io/langgraph/reference/constants/",
+      "total_elements": 20,
+      "callable_elements": 20,
+      "workflow_focus": "graph_construction",
+      "primary_keywords": [
+        "last",
+        "from",
+        "hidden",
+        "streaming",
+        "end",
+        "attributes",
+        "hide",
+        "virtual",
+        "style",
+        "maybe",
+        "the",
+        "pregel",
+        "graph",
+        "tracing",
+        "edge",
+        "first",
+        "tag",
+        "start",
+        "langsmith",
+        "certain",
+        "node",
+        "environments",
+        "intern"
+      ],
+      "elements_by_category": {
+        "uncategorized": [
+          {
+            "name": "TAG_HIDDEN",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "START",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "END",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "TAG_HIDDEN",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "START",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "END",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "intern",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "intern",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "intern",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "intern",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "intern",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "intern",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "intern",
+            "type": "function",
+            "is_callable": true,
+            "description": "Attributes:"
+          },
+          {
+            "name": "intern",
+            "type": "function",
+            "is_callable": true,
+            "description": "Attributes:"
+          },
+          {
+            "name": "TAG_HIDDEN",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          }
+        ],
+        "graph_construction": [
+          {
+            "name": "intern",
+            "type": "function",
+            "is_callable": true,
+            "description": "Tag to hide a node/edge from certain tracing/streaming environments."
+          },
+          {
+            "name": "intern",
+            "type": "function",
+            "is_callable": true,
+            "description": "The first (maybe virtual) node in graph-style Pregel."
+          },
+          {
+            "name": "intern",
+            "type": "function",
+            "is_callable": true,
+            "description": "The last (maybe virtual) node in graph-style Pregel."
+          },
+          {
+            "name": "intern",
+            "type": "function",
+            "is_callable": true,
+            "description": "Tag to hide a node/edge from certain tracing/streaming environments."
+          },
+          {
+            "name": "intern",
+            "type": "function",
+            "is_callable": true,
+            "description": "Tag to hide a node/edge from certain tracing/streaming environments."
+          }
+        ]
+      }
+    },
+    {
+      "name": "Channels¶",
+      "description": "Build reliable, stateful AI systems, without giving up control",
+      "source_url": "https://langchain-ai.github.io/langgraph/reference/channels/",
+      "total_elements": 20,
+      "callable_elements": 20,
+      "workflow_focus": "state_management",
+      "primary_keywords": [
+        "updatetype",
+        "valuetype",
+        "checkpoint",
+        "copy",
+        "from",
+        "available",
+        "consume",
+        "finish",
+        "lastvalue",
+        "update",
+        "topic",
+        "basechannel",
+        "get"
+      ],
+      "elements_by_category": {
+        "uncategorized": [
+          {
+            "name": "BaseChannel",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "ValueType",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "UpdateType",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "copy",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "is_available",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "consume",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "finish",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "ValueType",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "UpdateType",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "consume",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "finish",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "copy",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "LastValue",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "ValueType",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "UpdateType",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ],
+        "checkpointing": [
+          {
+            "name": "checkpoint",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "from_checkpoint",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ],
+        "state_management": [
+          {
+            "name": "get",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "update",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ],
+        "channels": [
+          {
+            "name": "Topic",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "Agents¶",
+      "description": "Build reliable, stateful AI systems, without giving up control",
+      "source_url": "https://langchain-ai.github.io/langgraph/reference/agents/",
+      "total_elements": 20,
+      "callable_elements": 20,
+      "workflow_focus": "graph_construction",
+      "primary_keywords": [
+        "state",
+        "last",
+        "toolnode",
+        "agentstate",
+        "bases",
+        "route",
+        "the",
+        "edge",
+        "message",
+        "use",
+        "injectedtoolarg",
+        "conditional"
+      ],
+      "elements_by_category": {
+        "uncategorized": [
+          {
+            "name": "AgentState",
+            "type": "class",
+            "is_callable": true,
+            "description": "Bases: InjectedToolArg"
+          }
+        ],
+        "graph_construction": [
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Use in the conditional_edge to route to the ToolNode if the last message"
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Use in the conditional_edge to route to the ToolNode if the last message"
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Use in the conditional_edge to route to the ToolNode if the last message"
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Use in the conditional_edge to route to the ToolNode if the last message"
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Use in the conditional_edge to route to the ToolNode if the last message"
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Use in the conditional_edge to route to the ToolNode if the last message"
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Use in the conditional_edge to route to the ToolNode if the last message"
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Use in the conditional_edge to route to the ToolNode if the last message"
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Use in the conditional_edge to route to the ToolNode if the last message"
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Use in the conditional_edge to route to the ToolNode if the last message"
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Use in the conditional_edge to route to the ToolNode if the last message"
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Use in the conditional_edge to route to the ToolNode if the last message"
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Use in the conditional_edge to route to the ToolNode if the last message"
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Use in the conditional_edge to route to the ToolNode if the last message"
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Use in the conditional_edge to route to the ToolNode if the last message"
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Use in the conditional_edge to route to the ToolNode if the last message"
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Use in the conditional_edge to route to the ToolNode if the last message"
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Use in the conditional_edge to route to the ToolNode if the last message"
+          },
+          {
+            "name": "State",
+            "type": "class",
+            "is_callable": true,
+            "description": "Use in the conditional_edge to route to the ToolNode if the last message"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LangGraph Supervisor¶",
+      "description": "Build reliable, stateful AI systems, without giving up control",
+      "source_url": "https://langchain-ai.github.io/langgraph/reference/supervisor/",
+      "total_elements": 20,
+      "callable_elements": 20,
+      "workflow_focus": "agent_patterns",
+      "primary_keywords": [
+        "model",
+        "agent",
+        "tool",
+        "list",
+        "toolnode",
+        "multi",
+        "tools",
+        "forward",
+        "handoff",
+        "create",
+        "callable",
+        "pregel",
+        "languagemodellike",
+        "supervisor",
+        "agents",
+        "message",
+        "basetool",
+        "args",
+        "none"
+      ],
+      "elements_by_category": {
+        "graph_construction": [
+          {
+            "name": "create_supervisor",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_handoff_tool",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_forward_message_tool",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_supervisor",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_handoff_tool",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_forward_message_tool",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_supervisor",
+            "type": "function",
+            "is_callable": true,
+            "description": "Create a multi-agent supervisor."
+          },
+          {
+            "name": "create_supervisor",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_supervisor",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_supervisor",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_supervisor",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_supervisor",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_supervisor",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_supervisor",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_supervisor",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_supervisor",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_supervisor",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_supervisor",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_supervisor",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_supervisor",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "LangGraph Swarm¶",
+      "description": "Build reliable, stateful AI systems, without giving up control",
+      "source_url": "https://langchain-ai.github.io/langgraph/reference/swarm/",
+      "total_elements": 20,
+      "callable_elements": 20,
+      "workflow_focus": "graph_construction",
+      "primary_keywords": [
+        "state",
+        "stategraph",
+        "list",
+        "create",
+        "swarm",
+        "pregel",
+        "config",
+        "str",
+        "schema",
+        "router",
+        "args",
+        "type",
+        "none",
+        "any",
+        "active",
+        "agent",
+        "tool",
+        "stateschematype",
+        "multi",
+        "add",
+        "handoff",
+        "agents",
+        "default",
+        "swarmstate"
+      ],
+      "elements_by_category": {
+        "uncategorized": [
+          {
+            "name": "SwarmState",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "SwarmState",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ],
+        "graph_construction": [
+          {
+            "name": "create_swarm",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "add_active_agent_router",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_handoff_tool",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_swarm",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "add_active_agent_router",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_handoff_tool",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_swarm",
+            "type": "function",
+            "is_callable": true,
+            "description": "Create a multi-agent swarm."
+          },
+          {
+            "name": "create_swarm",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_swarm",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_swarm",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_swarm",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_swarm",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_swarm",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_swarm",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_swarm",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_swarm",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_swarm",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "create_swarm",
+            "type": "function",
+            "is_callable": true,
+            "description": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "LangChain Model Context Protocol (MCP) Adapters¶",
+      "description": "Build reliable, stateful AI systems, without giving up control",
+      "source_url": "https://langchain-ai.github.io/langgraph/reference/mcp/",
+      "total_elements": 20,
+      "callable_elements": 20,
+      "workflow_focus": "state_management",
+      "primary_keywords": [
+        "them",
+        "compatible",
+        "loading",
+        "prompts",
+        "from",
+        "connecting",
+        "tools",
+        "resources",
+        "dict",
+        "client",
+        "and",
+        "servers",
+        "multiple",
+        "get",
+        "langchain",
+        "str",
+        "init",
+        "session",
+        "mcp",
+        "load",
+        "for",
+        "prompt",
+        "connections",
+        "with",
+        "connection",
+        "initialize",
+        "none",
+        "multiservermcpclient"
+      ],
+      "elements_by_category": {
+        "uncategorized": [
+          {
+            "name": "MultiServerMCPClient",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "__init__",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "session",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "MultiServerMCPClient",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "__init__",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "session",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "__init__",
+            "type": "function",
+            "is_callable": true,
+            "description": "Client for connecting to multiple MCP servers and loading LangChain-compatible tools, prompts and resources from them."
+          },
+          {
+            "name": "__init__",
+            "type": "function",
+            "is_callable": true,
+            "description": "Initialize a MultiServerMCPClient with MCP servers connections."
+          }
+        ],
+        "state_management": [
+          {
+            "name": "get_tools",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "get_prompt",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "get_resources",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "get_tools",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "get_prompt",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "get_resources",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ],
+        "checkpointing": [
+          {
+            "name": "load_mcp_tools",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "load_mcp_prompt",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "load_mcp_resources",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "load_mcp_tools",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "load_mcp_prompt",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "load_mcp_resources",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "RemoteGraph¶",
+      "description": "Build reliable, stateful AI systems, without giving up control",
+      "source_url": "https://langchain-ai.github.io/langgraph/reference/remote_graph/",
+      "total_elements": 20,
+      "callable_elements": 20,
+      "workflow_focus": "graph_construction",
+      "primary_keywords": [
+        "remotegraph",
+        "specs",
+        "state",
+        "history",
+        "accepts",
+        "from",
+        "annotation",
+        "input",
+        "bases",
+        "inputtype",
+        "output",
+        "classes",
+        "runnable",
+        "create",
+        "this",
+        "the",
+        "config",
+        "get",
+        "graph",
+        "pregelprotocol",
+        "schema",
+        "init",
+        "basetool",
+        "specified",
+        "aget",
+        "outputtype",
+        "args",
+        "type"
+      ],
+      "elements_by_category": {
+        "uncategorized": [
+          {
+            "name": "Args",
+            "type": "class",
+            "is_callable": true,
+            "description": "Bases: PregelProtocol"
+          },
+          {
+            "name": "Args",
+            "type": "class",
+            "is_callable": true,
+            "description": "Classes:"
+          },
+          {
+            "name": "Args",
+            "type": "class",
+            "is_callable": true,
+            "description": "Classes:"
+          },
+          {
+            "name": "Args",
+            "type": "class",
+            "is_callable": true,
+            "description": "Bases: PregelProtocol"
+          },
+          {
+            "name": "Args",
+            "type": "class",
+            "is_callable": true,
+            "description": "Bases: PregelProtocol"
+          },
+          {
+            "name": "RemoteGraph",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "Args",
+            "type": "class",
+            "is_callable": true,
+            "description": "Bases: PregelProtocol"
+          },
+          {
+            "name": "InputType",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "OutputType",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "__init__",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ],
+        "graph_construction": [
+          {
+            "name": "Args",
+            "type": "class",
+            "is_callable": true,
+            "description": "Create a BaseTool from a Runnable."
+          },
+          {
+            "name": "get_graph",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "aget_graph",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "aget_state",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ],
+        "types_schemas": [
+          {
+            "name": "Args",
+            "type": "class",
+            "is_callable": true,
+            "description": "The type of input this Runnable accepts specified as a type annotation."
+          }
+        ],
+        "tool_integration": [
+          {
+            "name": "input_schema",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "output_schema",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ],
+        "configuration": [
+          {
+            "name": "config_specs",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ],
+        "state_management": [
+          {
+            "name": "get_state",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          },
+          {
+            "name": "get_state_history",
+            "type": "class",
+            "is_callable": true,
+            "description": null
+          }
+        ]
+      }
+    }
+  ]
+}

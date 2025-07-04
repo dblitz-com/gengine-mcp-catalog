@@ -1,0 +1,558 @@
+{
+  "mapping_statistics": {
+    "total_elements": 300,
+    "total_mappings": 303,
+    "total_tools": 16,
+    "tools_by_category": {
+      "graph_construction": [
+        {
+          "tool_name": "create_graph",
+          "element_count": 88
+        },
+        {
+          "tool_name": "add_node",
+          "element_count": 31
+        },
+        {
+          "tool_name": "add_edge",
+          "element_count": 28
+        },
+        {
+          "tool_name": "compile_graph",
+          "element_count": 34
+        }
+      ],
+      "state_management": [
+        {
+          "tool_name": "get_state",
+          "element_count": 24
+        },
+        {
+          "tool_name": "update_state",
+          "element_count": 47
+        }
+      ],
+      "execution_control": [
+        {
+          "tool_name": "invoke_graph",
+          "element_count": 3
+        },
+        {
+          "tool_name": "stream_graph",
+          "element_count": 4
+        }
+      ],
+      "checkpointing": [
+        {
+          "tool_name": "save_checkpoint",
+          "element_count": 14
+        },
+        {
+          "tool_name": "load_checkpoint",
+          "element_count": 24
+        }
+      ],
+      "agent_patterns": [
+        {
+          "tool_name": "create_react_agent",
+          "element_count": 0
+        }
+      ],
+      "tool_integration": [
+        {
+          "tool_name": "bind_tools",
+          "element_count": 0
+        }
+      ],
+      "channels": [
+        {
+          "tool_name": "create_topic",
+          "element_count": 1
+        }
+      ],
+      "configuration": [
+        {
+          "tool_name": "configure_graph",
+          "element_count": 0
+        }
+      ],
+      "functional_api": [
+        {
+          "tool_name": "create_task",
+          "element_count": 5
+        }
+      ],
+      "types_schemas": [
+        {
+          "tool_name": "validate_schema",
+          "element_count": 0
+        }
+      ]
+    },
+    "elements_by_role": {
+      "example": 299,
+      "supporting": 4
+    },
+    "confidence_distribution": {
+      "40-49%": 33,
+      "30-39%": 266,
+      "50-59%": 4
+    },
+    "mapping_reasons_frequency": {
+      "Exact function match": 207,
+      "Semantic keywords": 185,
+      "Module context": 129,
+      "Usage patterns": 303,
+      "Description similarity": 90,
+      "Parameter patterns": 92
+    }
+  },
+  "quality_metrics": {
+    "overall_coverage": 1.01,
+    "tools_with_mappings": 1,
+    "average_elements_per_tool": 18.9375,
+    "primary_mapping_ratio": 0.0
+  },
+  "tool_mappings": {
+    "create_graph": {
+      "tool_definition": {
+        "name": "create_graph",
+        "description": "Create a new LangGraph state graph with specified state schema",
+        "category": "graph_construction",
+        "complexity": "moderate",
+        "parameter_count": 2
+      },
+      "element_counts": {
+        "primary": 0,
+        "supporting": 4,
+        "example": 84
+      },
+      "quality_scores": {
+        "coverage": 0.29333333333333333,
+        "quality": 0.0,
+        "completeness": 1.0
+      },
+      "sample_elements": {
+        "primary": [],
+        "supporting": [
+          "State",
+          "State",
+          "State"
+        ],
+        "example": [
+          "State",
+          "State",
+          "State"
+        ]
+      }
+    },
+    "add_node": {
+      "tool_definition": {
+        "name": "add_node",
+        "description": "Add a processing node to the graph with specified function",
+        "category": "graph_construction",
+        "complexity": "simple",
+        "parameter_count": 4
+      },
+      "element_counts": {
+        "primary": 0,
+        "supporting": 0,
+        "example": 31
+      },
+      "quality_scores": {
+        "coverage": 0.10333333333333333,
+        "quality": 0.0,
+        "completeness": 1.0
+      },
+      "sample_elements": {
+        "primary": [],
+        "supporting": [],
+        "example": [
+          "State",
+          "State",
+          "State"
+        ]
+      }
+    },
+    "add_edge": {
+      "tool_definition": {
+        "name": "add_edge",
+        "description": "Add edges between nodes to define workflow flow",
+        "category": "graph_construction",
+        "complexity": "simple",
+        "parameter_count": 4
+      },
+      "element_counts": {
+        "primary": 0,
+        "supporting": 0,
+        "example": 28
+      },
+      "quality_scores": {
+        "coverage": 0.09333333333333334,
+        "quality": 0.0,
+        "completeness": 1.0
+      },
+      "sample_elements": {
+        "primary": [],
+        "supporting": [],
+        "example": [
+          "add_edge",
+          "add_conditional_edges",
+          "create_supervisor"
+        ]
+      }
+    },
+    "compile_graph": {
+      "tool_definition": {
+        "name": "compile_graph",
+        "description": "Compile graph into executable workflow with optional checkpointing",
+        "category": "graph_construction",
+        "complexity": "moderate",
+        "parameter_count": 4
+      },
+      "element_counts": {
+        "primary": 0,
+        "supporting": 0,
+        "example": 34
+      },
+      "quality_scores": {
+        "coverage": 0.11333333333333333,
+        "quality": 0.0,
+        "completeness": 1.0
+      },
+      "sample_elements": {
+        "primary": [],
+        "supporting": [],
+        "example": [
+          "compile",
+          "CompiledStateGraph",
+          "compile"
+        ]
+      }
+    },
+    "get_state": {
+      "tool_definition": {
+        "name": "get_state",
+        "description": "Retrieve current or historical state from a graph execution",
+        "category": "state_management",
+        "complexity": "simple",
+        "parameter_count": 3
+      },
+      "element_counts": {
+        "primary": 0,
+        "supporting": 0,
+        "example": 24
+      },
+      "quality_scores": {
+        "coverage": 0.08,
+        "quality": 0.0,
+        "completeness": 1.0
+      },
+      "sample_elements": {
+        "primary": [],
+        "supporting": [],
+        "example": [
+          "State",
+          "State",
+          "State"
+        ]
+      }
+    },
+    "update_state": {
+      "tool_definition": {
+        "name": "update_state",
+        "description": "Update graph state with new values or merge changes",
+        "category": "state_management",
+        "complexity": "moderate",
+        "parameter_count": 4
+      },
+      "element_counts": {
+        "primary": 0,
+        "supporting": 0,
+        "example": 47
+      },
+      "quality_scores": {
+        "coverage": 0.15666666666666668,
+        "quality": 0.0,
+        "completeness": 1.0
+      },
+      "sample_elements": {
+        "primary": [],
+        "supporting": [],
+        "example": [
+          "State",
+          "State",
+          "State"
+        ]
+      }
+    },
+    "invoke_graph": {
+      "tool_definition": {
+        "name": "invoke_graph",
+        "description": "Execute graph synchronously with input and return final result",
+        "category": "execution_control",
+        "complexity": "complex",
+        "parameter_count": 3
+      },
+      "element_counts": {
+        "primary": 0,
+        "supporting": 0,
+        "example": 3
+      },
+      "quality_scores": {
+        "coverage": 0.01,
+        "quality": 0.0,
+        "completeness": 0.3
+      },
+      "sample_elements": {
+        "primary": [],
+        "supporting": [],
+        "example": [
+          "invoke",
+          "ainvoke",
+          "v"
+        ]
+      }
+    },
+    "stream_graph": {
+      "tool_definition": {
+        "name": "stream_graph",
+        "description": "Execute graph with streaming output for real-time monitoring",
+        "category": "execution_control",
+        "complexity": "complex",
+        "parameter_count": 4
+      },
+      "element_counts": {
+        "primary": 0,
+        "supporting": 0,
+        "example": 4
+      },
+      "quality_scores": {
+        "coverage": 0.013333333333333334,
+        "quality": 0.0,
+        "completeness": 0.4
+      },
+      "sample_elements": {
+        "primary": [],
+        "supporting": [],
+        "example": [
+          "stream",
+          "astream",
+          "stream"
+        ]
+      }
+    },
+    "save_checkpoint": {
+      "tool_definition": {
+        "name": "save_checkpoint",
+        "description": "Save current graph state as checkpoint for persistence or recovery",
+        "category": "checkpointing",
+        "complexity": "moderate",
+        "parameter_count": 4
+      },
+      "element_counts": {
+        "primary": 0,
+        "supporting": 0,
+        "example": 14
+      },
+      "quality_scores": {
+        "coverage": 0.04666666666666667,
+        "quality": 0.0,
+        "completeness": 1.0
+      },
+      "sample_elements": {
+        "primary": [],
+        "supporting": [],
+        "example": [
+          "save",
+          "save",
+          "Checkpoint"
+        ]
+      }
+    },
+    "load_checkpoint": {
+      "tool_definition": {
+        "name": "load_checkpoint",
+        "description": "Load and restore graph state from saved checkpoint",
+        "category": "checkpointing",
+        "complexity": "moderate",
+        "parameter_count": 3
+      },
+      "element_counts": {
+        "primary": 0,
+        "supporting": 0,
+        "example": 24
+      },
+      "quality_scores": {
+        "coverage": 0.08,
+        "quality": 0.0,
+        "completeness": 1.0
+      },
+      "sample_elements": {
+        "primary": [],
+        "supporting": [],
+        "example": [
+          "get_state",
+          "get",
+          "get_tuple"
+        ]
+      }
+    },
+    "create_react_agent": {
+      "tool_definition": {
+        "name": "create_react_agent",
+        "description": "Create ReAct (Reasoning + Acting) agent with tools and reasoning loop",
+        "category": "agent_patterns",
+        "complexity": "complex",
+        "parameter_count": 4
+      },
+      "element_counts": {
+        "primary": 0,
+        "supporting": 0,
+        "example": 0
+      },
+      "quality_scores": {
+        "coverage": 0.0,
+        "quality": 0.0,
+        "completeness": 0.0
+      },
+      "sample_elements": {
+        "primary": [],
+        "supporting": [],
+        "example": []
+      }
+    },
+    "bind_tools": {
+      "tool_definition": {
+        "name": "bind_tools",
+        "description": "Bind external tools to model for function calling",
+        "category": "tool_integration",
+        "complexity": "moderate",
+        "parameter_count": 3
+      },
+      "element_counts": {
+        "primary": 0,
+        "supporting": 0,
+        "example": 0
+      },
+      "quality_scores": {
+        "coverage": 0.0,
+        "quality": 0.0,
+        "completeness": 0.0
+      },
+      "sample_elements": {
+        "primary": [],
+        "supporting": [],
+        "example": []
+      }
+    },
+    "create_topic": {
+      "tool_definition": {
+        "name": "create_topic",
+        "description": "Create communication topic for message passing between nodes",
+        "category": "channels",
+        "complexity": "simple",
+        "parameter_count": 3
+      },
+      "element_counts": {
+        "primary": 0,
+        "supporting": 0,
+        "example": 1
+      },
+      "quality_scores": {
+        "coverage": 0.0033333333333333335,
+        "quality": 0.0,
+        "completeness": 0.1
+      },
+      "sample_elements": {
+        "primary": [],
+        "supporting": [],
+        "example": [
+          "Topic"
+        ]
+      }
+    },
+    "configure_graph": {
+      "tool_definition": {
+        "name": "configure_graph",
+        "description": "Set graph-wide configuration options and runtime parameters",
+        "category": "configuration",
+        "complexity": "moderate",
+        "parameter_count": 4
+      },
+      "element_counts": {
+        "primary": 0,
+        "supporting": 0,
+        "example": 0
+      },
+      "quality_scores": {
+        "coverage": 0.0,
+        "quality": 0.0,
+        "completeness": 0.0
+      },
+      "sample_elements": {
+        "primary": [],
+        "supporting": [],
+        "example": []
+      }
+    },
+    "create_task": {
+      "tool_definition": {
+        "name": "create_task",
+        "description": "Create functional task with @task decorator pattern for modular workflows",
+        "category": "functional_api",
+        "complexity": "moderate",
+        "parameter_count": 3
+      },
+      "element_counts": {
+        "primary": 0,
+        "supporting": 0,
+        "example": 5
+      },
+      "quality_scores": {
+        "coverage": 0.016666666666666666,
+        "quality": 0.0,
+        "completeness": 0.5
+      },
+      "sample_elements": {
+        "primary": [],
+        "supporting": [],
+        "example": [
+          "task",
+          "task",
+          "__init__"
+        ]
+      }
+    },
+    "validate_schema": {
+      "tool_definition": {
+        "name": "validate_schema",
+        "description": "Validate data against Pydantic schemas and type definitions",
+        "category": "types_schemas",
+        "complexity": "simple",
+        "parameter_count": 3
+      },
+      "element_counts": {
+        "primary": 0,
+        "supporting": 0,
+        "example": 0
+      },
+      "quality_scores": {
+        "coverage": 0.0,
+        "quality": 0.0,
+        "completeness": 0.0
+      },
+      "sample_elements": {
+        "primary": [],
+        "supporting": [],
+        "example": []
+      }
+    }
+  },
+  "unmapped_elements_count": 142,
+  "summary": {
+    "total_tools": 16,
+    "tools_with_elements": 1,
+    "total_mapped_elements": 303
+  }
+}

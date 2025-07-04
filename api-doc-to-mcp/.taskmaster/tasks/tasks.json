@@ -1,0 +1,350 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Setup Project Repository and Core Dependencies",
+        "description": "Initialize the project repository, set up Python 3.9+ environment, and install core dependencies (scrapy, beautifulsoup4, pydantic, apispec, click, pytest).",
+        "details": "Create a new Python project with a virtual environment. Install required packages via pip. Set up a basic project structure with src/, tests/, and docs/ directories. Initialize git repository and add a README.md.",
+        "testStrategy": "Verify all dependencies are installed and importable. Run a simple pytest to confirm test environment is working.",
+        "priority": "high",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 2,
+        "title": "Implement Base Scraper Interface",
+        "description": "Define and implement an abstract base class for all scrapers to standardize core scraping operations. The base scraper interface should provide a robust foundation for concrete scraper implementations, ensuring consistency, extensibility, and reliability.",
+        "status": "done",
+        "dependencies": [
+          1
+        ],
+        "priority": "high",
+        "details": "The base scraper interface has been fully implemented with the following features:\n\n- An abstract base class (ABC) using Python's abc module, including:\n  - Abstract methods: scrape() and parse_endpoint_from_content()\n  - Lifecycle methods: start() and stop()\n  - Progress tracking via a ScraperProgress dataclass\n  - Error handling through custom error handlers\n  - Integrated logging support\n- Comprehensive type definitions:\n  - ScrapedEndpoint, ScrapedParameter, and ScrapedResponse dataclasses\n  - HTTPMethod and ParameterLocation enums\n  - ScraperStatus enum for tracking scraper state\n- Helper methods for:\n  - URL normalization\n  - API documentation URL detection\n  - Path parameter extraction\n  - Parameter type guessing\n  - OpenAPI specification generation\n- The interface is designed to prevent direct instantiation and enforce implementation of required methods in subclasses.\n\nThis base scraper is now ready for use by all concrete scraper implementations.",
+        "testStrategy": "Comprehensive unit tests have been written and all 18 tests are passing. Tests verify that:\n- The abstract base class cannot be instantiated directly\n- All required abstract and concrete methods are present\n- Progress tracking, error handling, and URL manipulation work as intended\n- Type definitions and enums function correctly\n\nThe test suite ensures the reliability and extensibility of the base scraper interface.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement abstract base class with required methods",
+            "description": "Create the base scraper ABC with abstract methods, lifecycle management, progress tracking, error handling, and logging.",
+            "status": "done",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Define type definitions and enums",
+            "description": "Add dataclasses for ScrapedEndpoint, ScrapedParameter, ScrapedResponse, and enums for HTTPMethod, ParameterLocation, and ScraperStatus.",
+            "status": "done",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Implement helper methods",
+            "description": "Add helper methods for URL normalization, API documentation URL detection, path parameter extraction, parameter type guessing, and OpenAPI spec generation.",
+            "status": "done",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Write and run comprehensive unit tests",
+            "description": "Ensure the base class cannot be instantiated, all required methods are present, and all features are covered by tests.",
+            "status": "done",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Develop Documentation Spider for Recursive Crawling",
+        "description": "Implement a Scrapy spider to recursively crawl documentation websites with configurable depth.",
+        "details": "Create a Scrapy spider that accepts a start URL and depth limit. Implement logic to respect robots.txt and rate limiting. Use Scrapy's built-in queue for URL management. Add URL filtering to focus on API documentation pages.",
+        "testStrategy": "Test spider with a mock documentation site. Verify it respects depth, robots.txt, and only visits allowed URLs.",
+        "priority": "high",
+        "dependencies": [
+          1,
+          2
+        ],
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Initialize Scrapy Project and Spider",
+            "description": "Set up a new Scrapy project and generate a base spider that will serve as the foundation for recursive documentation crawling.",
+            "dependencies": [],
+            "details": "Use the Scrapy CLI to create a new project directory. Generate a new spider using the `scrapy genspider` command, specifying a placeholder start URL. Ensure the spider class is created in the appropriate directory and is ready for further customization.[2]",
+            "status": "done",
+            "testStrategy": "Verify that the spider runs with the default parse method and can fetch the start URL without errors."
+          },
+          {
+            "id": 2,
+            "title": "Implement Recursive Crawling with Configurable Depth",
+            "description": "Add logic to the spider to recursively follow links from the start URL, respecting a configurable depth limit.",
+            "dependencies": [
+              1
+            ],
+            "details": "In the spider's `parse` method, extract all relevant links from the current page. For each link, yield a new Scrapy Request with a callback to the same parse method, passing along the current depth in the request's meta. Stop recursion when the depth limit is reached. Use Scrapy's built-in queue for managing requests.[1][3]",
+            "status": "done",
+            "testStrategy": "Run the spider with different depth limits and confirm that it stops crawling at the specified depth."
+          },
+          {
+            "id": 3,
+            "title": "Respect robots.txt and Implement Rate Limiting",
+            "description": "Configure the spider to obey robots.txt rules and set appropriate rate limiting to avoid overloading target servers.",
+            "dependencies": [
+              2
+            ],
+            "details": "Enable `ROBOTSTXT_OBEY = True` in Scrapy settings to ensure compliance with robots.txt. Set download delay and concurrent requests settings to control crawling speed. Optionally, implement auto-throttling for dynamic rate limiting.",
+            "status": "done",
+            "testStrategy": "Test the spider against a site with restrictive robots.txt and verify that disallowed URLs are not crawled. Monitor request rates to ensure limits are respected."
+          },
+          {
+            "id": 4,
+            "title": "Implement URL Filtering for API Documentation Pages",
+            "description": "Add filtering logic to ensure the spider only follows and processes URLs relevant to API documentation.",
+            "dependencies": [
+              3
+            ],
+            "details": "Define URL patterns or use regular expressions to match documentation-specific paths. In the parse method, filter extracted links so that only those matching the criteria are followed. Optionally, use the `allowed_domains` and custom rules for further restriction.",
+            "status": "done",
+            "testStrategy": "Crawl a documentation site and verify that only API documentation pages are visited and processed."
+          },
+          {
+            "id": 5,
+            "title": "Parameterize Start URL and Depth Limit",
+            "description": "Allow the spider to accept the start URL and depth limit as configurable parameters at runtime.",
+            "dependencies": [
+              4
+            ],
+            "details": "Modify the spider to accept `start_url` and `depth_limit` as arguments via the command line or Scrapy's custom settings. Update the spider's initialization and crawling logic to use these parameters.",
+            "status": "done",
+            "testStrategy": "Launch the spider with different start URLs and depth limits, confirming that the parameters are correctly applied and affect crawling behavior as expected."
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Integrate Beautiful Soup for HTML Parsing",
+        "description": "Add Beautiful Soup integration to parse HTML content and extract relevant sections.",
+        "details": "Within the spider's parse method, use Beautiful Soup to extract HTML elements. Implement basic content extraction for API documentation sections. Store extracted data in a structured format.",
+        "testStrategy": "Test parsing with sample HTML files. Verify correct extraction of API sections and data structure.",
+        "priority": "high",
+        "dependencies": [
+          1,
+          3
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 5,
+        "title": "Implement Pattern Matching for API Endpoints",
+        "description": "Add pattern matching logic to identify and extract API endpoints, methods, and parameters.",
+        "details": "Use regex and heuristic-based extraction to find API endpoints, HTTP methods, and parameters in parsed HTML. Support common patterns (div.endpoint, section.api-method, table-based parameters).",
+        "testStrategy": "Test with various documentation formats. Verify correct identification and extraction of endpoints, methods, and parameters.",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          4
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 6,
+        "title": "Add Scrapy-Playwright Integration for JavaScript Rendering",
+        "description": "Integrate Scrapy-Playwright to handle JavaScript-rendered documentation sites.",
+        "details": "Configure Scrapy-Playwright middleware. Add logic to detect when JS rendering is needed. Implement configurable wait strategies for dynamic content. Ensure compatibility with modern documentation frameworks.",
+        "testStrategy": "Test with JS-heavy documentation sites. Verify correct rendering and extraction of dynamic content.",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          3
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 7,
+        "title": "Build OpenAPI Specification Generator",
+        "description": "Implement logic to generate valid OpenAPI 3.0 specifications from extracted API data.",
+        "details": "Use APISpec and Pydantic to build OpenAPI specs. Automatically generate operation IDs, infer parameter types, and organize tags by documentation structure. Support response schema generation from examples.",
+        "testStrategy": "Test with extracted API data. Validate generated OpenAPI specs using openapi-spec-validator.",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          5
+        ],
+        "status": "in-progress",
+        "subtasks": []
+      },
+      {
+        "id": 8,
+        "title": "Develop CLI Interface",
+        "description": "Create a command-line interface for user interaction and configuration.",
+        "details": "Use Click to build a CLI that accepts documentation URLs, output format, and other options. Add help text and error handling. Support output to JSON/YAML.",
+        "testStrategy": "Test CLI with various arguments. Verify correct parsing and output generation.",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          7
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 9,
+        "title": "Implement Framework Adapters and Extensibility",
+        "description": "Add support for framework-specific adapters and a plugin architecture for custom scrapers.",
+        "details": "Create adapter classes for Sphinx, MkDocs, Docusaurus, etc. Implement a plugin system for custom pattern definitions and output formats. Ensure architecture is extensible for future frameworks.",
+        "testStrategy": "Test adapters with real documentation sites. Verify plugin loading and custom pattern application.",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          5
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 10,
+        "title": "Add Comprehensive Error Handling and Testing",
+        "description": "Implement robust error handling, resume/retry logic, and a comprehensive test suite.",
+        "details": "Add error handling for network failures, unresponsive sites, and malformed HTML. Implement resume/retry logic for large sites. Create unit and integration tests, including performance benchmarks and edge case handling.",
+        "testStrategy": "Run unit and integration tests. Test error handling and resume logic. Benchmark performance with large documentation sites.",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          3,
+          7
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 11,
+        "title": "Build Python API Documentation Parser for Classes, Methods, and Functions",
+        "description": "Develop a parser to extract classes, methods, functions, type hints, parameters, return types, docstrings, and code examples from Python API documentation sites like LangGraph.",
+        "details": "1. **Parser Development**: Implement a parser using BeautifulSoup and Scrapy to extract relevant information from HTML documentation. Focus on parsing Python-specific elements like classes, methods, functions, type hints, and docstrings. Use Pydantic for data modeling and validation. 2. **Data Extraction Logic**: Develop logic to identify and extract code examples from documentation pages. This may involve regular expressions or custom parsing rules. 3. **Integration with Existing Framework**: Integrate the parser with the existing framework adapters (Task 9) to support various documentation frameworks like Sphinx, MkDocs, and Docusaurus. 4. **Error Handling and Logging**: Implement robust error handling for parsing failures and logging to track issues. 5. **Example Generation**: Develop a system to generate code examples based on extracted data, if possible.",
+        "testStrategy": "1. **Unit Tests**: Write unit tests to verify the parser can correctly extract classes, methods, functions, type hints, parameters, return types, docstrings, and code examples from sample documentation pages. 2. **Integration Tests**: Perform integration tests with real documentation sites to ensure the parser works as expected across different frameworks. 3. **Edge Case Testing**: Test the parser with complex or malformed documentation to ensure robustness.",
+        "status": "in-progress",
+        "dependencies": [
+          1,
+          3,
+          9
+        ],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 12,
+        "title": "MCP Server Generator from Python API Documentation",
+        "description": "Develop a generator that creates a workflow-focused MCP server from Python API documentation, with intelligent grouping of LangGraph API elements into practical, high-level tools. The generator should leverage research insights to map related functions into ~20-30 workflow-oriented MCP tools, reflecting real-world LangGraph usage patterns and architectural best practices.",
+        "status": "pending",
+        "dependencies": [
+          1,
+          3,
+          11
+        ],
+        "priority": "high",
+        "details": "Implement a module that consumes parsed Python API documentation (classes, methods, functions, docstrings, and code examples) and generates a FastMCP or python-sdk based MCP server. Instead of mapping each function directly to a tool, the generator should:\n\n1. **Intelligently group related functions** into approximately 20-30 workflow-focused MCP tools, based on comprehensive analysis of LangGraph's 23,429 API elements and architectural patterns. Example groupings include:\n   - Graph Construction (e.g., create_graph, add_node, add_edge)\n   - State Management (e.g., get_state, update_state, state_history)\n   - Execution Controls (e.g., invoke_graph, stream_graph, async execution)\n   - Checkpointing & Persistence (e.g., save/load checkpoints)\n   - Agent Patterns (e.g., react_agent, tool_calling_agent)\n   - Multi-Agent Coordination (e.g., supervisor, worker_team)\n   - Tool Integration (e.g., bind_tools, execute_tool)\n\n2. **Recognize and encode LangGraph's core architectural patterns** (as identified by Context7 research):\n   - Functional API with @task decorators\n   - Orchestrator-Worker workflows\n   - Pydantic state schemas\n   - Conditional routing\n   - Parallel execution\n\n3. **Design tools and resources around real-world workflows**, not raw API exposure, to ensure the generated MCP server is practical for AI agent development and not overwhelming to users.\n\n4. **Convert documentation content** (e.g., module/class descriptions) into MCP Resources for reference.\n\n5. **Transform code examples** from the documentation into MCP Prompts, enabling users to interact with the server using real-world usage patterns.\n\nUse FastMCP or the official python-sdk to handle protocol boilerplate and server instantiation. The generator should output a runnable Python script or module that can be deployed as an MCP server. Ensure the generated server supports dynamic tool registration and resource management as per the MCP specification[2][4].",
+        "testStrategy": "1) Unit tests: Verify that the generator correctly groups related functions into workflow-focused Tools, and accurately maps documentation to Resources and examples to Prompts. 2) Integration tests: Generate a server from sample LangGraph API documentation and validate that all grouped Tools, Resources, and Prompts are accessible via the MCP protocol. 3) End-to-end tests: Deploy the generated server and use an MCP client to interact with the workflow-oriented Tools, Resources, and Prompts, ensuring correct behavior and metadata. 4) Edge case tests: Test with incomplete or malformed documentation to ensure robust error handling and graceful degradation, especially in the grouping logic.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Analyze and Structure Extracted API Data",
+            "description": "Process the parsed Python API documentation, extracting and organizing classes, methods, functions, docstrings, and code examples into a structured format suitable for further analysis.",
+            "dependencies": [],
+            "details": "Ensure all API elements from the LangGraph documentation are captured, including metadata and relationships, to enable intelligent grouping and mapping in subsequent steps.",
+            "status": "done",
+            "testStrategy": "Verify completeness and accuracy by cross-referencing a sample of the structured data with the original documentation."
+          },
+          {
+            "id": 2,
+            "title": "Define Workflow-Oriented Tool Categories",
+            "description": "Identify and specify approximately 20-30 high-level, workflow-focused MCP tool categories by analyzing real-world LangGraph usage patterns and architectural best practices.",
+            "dependencies": [
+              1
+            ],
+            "details": "Leverage research insights and architectural patterns (e.g., orchestrator-worker, state schemas, conditional routing) to inform the grouping strategy, ensuring categories reflect practical agent development workflows.",
+            "status": "done",
+            "testStrategy": "Review proposed categories with domain experts and validate coverage against representative LangGraph workflows."
+          },
+          {
+            "id": 3,
+            "title": "Implement Intelligent Grouping Logic",
+            "description": "Develop algorithms or heuristics to map related API elements into the defined workflow-oriented tool categories, considering function semantics, usage context, and architectural patterns.",
+            "dependencies": [
+              2
+            ],
+            "details": "Utilize function signatures, docstrings, and code examples to inform grouping; ensure each API element is assigned to the most appropriate tool category.",
+            "status": "done",
+            "testStrategy": "Test grouping logic on a subset of API data and manually inspect groupings for accuracy and coherence."
+          },
+          {
+            "id": 4,
+            "title": "Generate MCP Tool Definitions",
+            "description": "Create MCP tool definitions for each workflow-oriented category, encapsulating grouped API elements as high-level, user-friendly tools with appropriate input/output schemas.",
+            "dependencies": [
+              3
+            ],
+            "details": "Ensure each tool is designed for practical usability, abstracts underlying API complexity, and supports dynamic registration as per MCP specifications.",
+            "status": "in-progress",
+            "testStrategy": "Validate generated tool definitions by simulating tool registration and inspecting resulting schemas for correctness and usability."
+          },
+          {
+            "id": 5,
+            "title": "Create MCP Resources and Prompts from Documentation",
+            "description": "Transform module/class descriptions into MCP Resources and convert code examples into MCP Prompts, enabling users to access reference material and interact with the server using real-world patterns.",
+            "dependencies": [
+              1
+            ],
+            "details": "Ensure resources are well-organized and prompts are actionable, reflecting common usage scenarios and best practices.",
+            "status": "pending",
+            "testStrategy": "Review generated resources and prompts for clarity, relevance, and alignment with documented workflows."
+          },
+          {
+            "id": 6,
+            "title": "Assemble and Output the FastMCP Server Module",
+            "description": "Integrate generated MCP tools, resources, and prompts into a runnable Python script or module that instantiates a FastMCP or python-sdk based MCP server, supporting dynamic tool registration and resource management.",
+            "dependencies": [
+              4,
+              5
+            ],
+            "details": "Ensure the output module adheres to MCP protocol requirements and is ready for deployment as a workflow-focused MCP server.",
+            "status": "pending",
+            "testStrategy": "Deploy the generated server in a test environment and verify end-to-end functionality, including tool invocation and resource access."
+          }
+        ]
+      },
+      {
+        "id": 13,
+        "title": "Update LangGraph Test to Use Python API Parser and Validate MCP Server Generation",
+        "description": "Refactor the LangGraph end-to-end test to utilize the new Python API documentation parser instead of the REST API scraper, and verify the full flow from documentation parsing to MCP server generation and Claude Desktop integration.",
+        "details": "1. Replace the REST API scraper in the LangGraph test suite with the new Python API documentation parser developed in Task 11. Ensure the parser is correctly invoked to extract classes, methods, functions, type hints, docstrings, and code examples from LangGraph's documentation.\n2. Integrate the output of the parser with the MCP server generator module from Task 12, mapping parsed entities to MCP Tools, Resources, and Prompts as specified.\n3. Automate the process to generate a working MCP server from the parsed documentation, ensuring the server exposes all expected endpoints and metadata.\n4. Implement test logic to launch the generated MCP server and connect to it using Claude Desktop, verifying that the server responds correctly to tool invocations and resource queries.\n5. Ensure the test covers the complete flow: documentation parsing → MCP server generation → server startup → Claude Desktop interaction.\n6. Update test fixtures and mocks as needed to support the new parser and server generator interfaces. Document any changes to test setup or teardown procedures.",
+        "testStrategy": "- Run the end-to-end test, starting from LangGraph documentation input and proceeding through parsing, MCP server generation, and server startup.\n- Use Claude Desktop to connect to the generated MCP server and execute representative tool calls and resource queries.\n- Assert that all expected MCP Tools, Resources, and Prompts are present and function as intended.\n- Validate that the server handles real-world documentation edge cases (e.g., overloaded methods, nested classes, complex type hints).\n- Confirm that the test fails gracefully if any step in the flow is unsuccessful, with clear error reporting.\n- Review logs and outputs to ensure the parser and generator are invoked as expected and that the integration with Claude Desktop is robust.",
+        "status": "pending",
+        "dependencies": [
+          1,
+          11,
+          12
+        ],
+        "priority": "high",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-07-02T19:34:34.839Z",
+      "updated": "2025-07-02T21:44:29.307Z",
+      "description": "Tasks for master context"
+    }
+  }
+}

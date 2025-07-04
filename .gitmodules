@@ -1,0 +1,6 @@
+[submodule "src/gengines/gengine-rest-api-to-mcp"]
+	path = src/gengines/gengine-rest-api-to-mcp
+	url = git@github.com:dblitz-com/gengine-rest-api-to-mcp.git
+[submodule "src/gengines/gengine-mcp-catalog"]
+	path = src/gengines/gengine-mcp-catalog
+	url = git@github.com:dblitz-com/gengine-mcp-catalog.git

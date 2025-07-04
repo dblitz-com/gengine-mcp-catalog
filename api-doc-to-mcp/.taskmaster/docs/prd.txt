@@ -1,0 +1,196 @@
+# Product Requirements Document: Universal Documentation Scraper to OpenAPI Generator
+
+## Executive Summary
+Build a generalized documentation scraper that can recursively crawl ANY documentation website (Sphinx, MkDocs, Docusaurus, VitePress, etc.), extract API endpoints with their parameters and responses from HTML documentation, handle JavaScript-rendered content, and automatically generate OpenAPI specifications from the extracted data.
+
+## Problem Statement
+Currently, there is no existing tool that can automatically convert API documentation websites into OpenAPI specifications. Many APIs have comprehensive documentation but lack machine-readable OpenAPI specs. This tool will bridge that gap by intelligently parsing documentation and generating standardized OpenAPI specifications that can then be used to create MCP servers, SDK generators, and other tooling.
+
+## Goals and Objectives
+1. Create a universal documentation scraper that works with any documentation framework
+2. Extract API endpoints, HTTP methods, parameters, request/response schemas from HTML docs
+3. Handle both static HTML and JavaScript-rendered documentation sites
+4. Generate valid OpenAPI 3.0 specifications from scraped data
+5. Support recursive crawling with configurable depth limits
+6. Provide extensible architecture for custom documentation patterns
+
+## Target Users
+- API developers who need OpenAPI specs for existing documentation
+- Teams migrating legacy APIs to modern tooling
+- Open source maintainers wanting to generate MCP servers from docs
+- Integration developers needing machine-readable API definitions
+
+## Core Features
+
+### 1. Universal Documentation Crawling
+- Recursive website crawling with depth control
+- Automatic detection of documentation frameworks (Sphinx, MkDocs, etc.)
+- Respect robots.txt and rate limiting
+- Resume capability for large documentation sites
+- URL filtering to focus on API documentation pages
+
+### 2. JavaScript Rendering Support
+- Scrapy-Playwright integration for JS-heavy sites
+- Automatic detection of when JS rendering is needed
+- Configurable wait strategies for dynamic content
+- Support for modern documentation frameworks
+
+### 3. Intelligent API Extraction
+- Pattern matching for common API documentation formats
+- Extract HTTP methods (GET, POST, PUT, DELETE, etc.)
+- Parse API paths with parameters (/users/{id}, /api/v1/resources)
+- Identify query parameters, headers, and body parameters
+- Extract response codes and schemas
+- Handle nested data structures and examples
+
+### 4. Multi-Strategy Parsing
+- Strategy 1: Structured API sections (div.endpoint, section.api-method)
+- Strategy 2: Text pattern matching (method + path combinations)
+- Strategy 3: Embedded OpenAPI/Swagger detection
+- Strategy 4: Table-based parameter extraction
+- Strategy 5: Code block schema inference
+
+### 5. OpenAPI Generation
+- Generate valid OpenAPI 3.0 specifications
+- Automatic operation ID generation
+- Parameter type inference from descriptions
+- Response schema generation from examples
+- Security scheme detection
+- Tag organization by documentation structure
+
+### 6. Extensibility
+- Plugin architecture for custom scrapers
+- Documentation framework adapters
+- Custom pattern definitions
+- Output format plugins (OpenAPI, Postman, etc.)
+
+## Technical Architecture
+
+### Core Components
+1. **Base Scraper Interface** - Abstract base class for all scrapers
+2. **Documentation Spider** - Scrapy spider for crawling
+3. **HTML Parser** - Beautiful Soup for content extraction
+4. **Pattern Matcher** - Regex and heuristic-based extraction
+5. **Schema Generator** - OpenAPI specification builder
+6. **Framework Adapters** - Specific patterns for Sphinx, MkDocs, etc.
+
+### Technology Stack
+- Python 3.9+ for core implementation
+- Scrapy for web crawling and orchestration
+- Scrapy-Playwright for JavaScript rendering
+- Beautiful Soup 4 for HTML parsing
+- Pydantic for data validation
+- APISpec for OpenAPI generation
+- Click for CLI interface
+- pytest for testing
+
+### Data Flow
+1. User provides documentation URL and options
+2. Spider crawls documentation recursively
+3. Each page is parsed for API information
+4. Extracted endpoints are normalized and validated
+5. OpenAPI specification is generated
+6. Output is saved as JSON/YAML
+
+## Implementation Phases
+
+### Phase 1: Core Infrastructure
+- Set up project structure and dependencies
+- Implement base scraper interface
+- Create basic Scrapy spider
+- Add Beautiful Soup integration
+
+### Phase 2: Basic Extraction
+- Implement pattern matching for API endpoints
+- Add parameter extraction from common formats
+- Create simple OpenAPI generator
+- Build CLI interface
+
+### Phase 3: Advanced Features
+- Add Playwright integration for JS rendering
+- Implement multiple extraction strategies
+- Add framework-specific adapters
+- Enhance type inference
+
+### Phase 4: Polish and Testing
+- Add comprehensive error handling
+- Implement resume/retry logic
+- Create extensive test suite
+- Add documentation and examples
+
+## Success Metrics
+- Successfully parse 90%+ of common documentation formats
+- Generate valid OpenAPI specs that pass validation
+- Handle sites with 1000+ API endpoints efficiently
+- Process JavaScript-rendered documentation accurately
+- Maintain crawl speeds of 10+ pages/second for static sites
+
+## Example Use Cases
+
+### LangGraph Documentation
+- Scrape https://langchain-ai.github.io/langgraph/reference/
+- Extract all Python API methods and classes
+- Generate OpenAPI spec for graph operations, agents, etc.
+- Create MCP server from generated spec
+
+### FastAPI Documentation
+- Parse existing HTML documentation
+- Compare extracted spec with native OpenAPI
+- Validate accuracy of extraction
+
+### Legacy API Documentation
+- Convert old HTML/PDF documentation to OpenAPI
+- Enable modern tooling for legacy systems
+- Generate SDKs and testing tools
+
+## Constraints and Limitations
+- Cannot extract information not present in documentation
+- Type inference may be imperfect without explicit schemas
+- Rate limiting required to avoid overwhelming servers
+- Some dynamic content may be difficult to capture
+- Authentication-gated documentation requires manual configuration
+
+## Future Enhancements
+- Machine learning for improved extraction accuracy
+- Support for PDF and Markdown documentation
+- Integration with existing OpenAPI specs for validation
+- Real-time documentation monitoring for changes
+- Cloud-hosted scraping service
+
+## Deliverables
+1. Python package (pip installable)
+2. Command-line interface
+3. Comprehensive documentation
+4. Example configurations for popular frameworks
+5. Test suite with documentation site fixtures
+6. Docker container for easy deployment
+
+## Testing Strategy
+- Unit tests for all extraction patterns
+- Integration tests with real documentation sites
+- Validation of generated OpenAPI specs
+- Performance benchmarks for large sites
+- Edge case handling (malformed HTML, infinite loops, etc.)
+
+## Dependencies
+- External libraries: scrapy, scrapy-playwright, beautifulsoup4, pydantic, apispec
+- Python 3.9+ runtime
+- Optional: Docker for containerization
+- Optional: Redis for distributed crawling
+
+## Risk Mitigation
+- Implement robust error handling for network failures
+- Add circuit breakers for unresponsive sites
+- Include fallback strategies for extraction
+- Provide clear error messages and debugging options
+- Document known limitations clearly
+
+## Timeline Estimate
+- Phase 1: 1 week - Core infrastructure
+- Phase 2: 1 week - Basic extraction
+- Phase 3: 2 weeks - Advanced features
+- Phase 4: 1 week - Polish and testing
+- Total: 5 weeks for initial release
+
+## Conclusion
+This universal documentation scraper will fill a critical gap in the API tooling ecosystem by enabling automatic OpenAPI generation from any documentation website. It will accelerate API integration, improve documentation accuracy, and enable modern tooling for legacy systems.

@@ -1,0 +1,500 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "LangGraph API",
+    "version": "0.2.74",
+    "description": "REST API interface for LangGraph - Build resilient language agents as graphs"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000",
+      "description": "Local LangGraph API server"
+    }
+  ],
+  "paths": {
+    "/graphs": {
+      "post": {
+        "summary": "Create a new StateGraph",
+        "operationId": "create_state_graph",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGraphRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Graph created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GraphResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/graphs/{graph_id}/nodes": {
+      "post": {
+        "summary": "Add a node to the graph",
+        "operationId": "add_node",
+        "parameters": [
+          {
+            "name": "graph_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddNodeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Node added successfully"
+          }
+        }
+      }
+    },
+    "/graphs/{graph_id}/edges": {
+      "post": {
+        "summary": "Add an edge to the graph",
+        "operationId": "add_edge",
+        "parameters": [
+          {
+            "name": "graph_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddEdgeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Edge added successfully"
+          }
+        }
+      }
+    },
+    "/graphs/{graph_id}/compile": {
+      "post": {
+        "summary": "Compile the graph",
+        "operationId": "compile_graph",
+        "parameters": [
+          {
+            "name": "graph_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompileRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Graph compiled successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompiledGraphResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/graphs/{graph_id}/invoke": {
+      "post": {
+        "summary": "Invoke a compiled graph",
+        "operationId": "invoke_graph",
+        "parameters": [
+          {
+            "name": "graph_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InvokeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Graph invoked successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvokeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agents/react": {
+      "post": {
+        "summary": "Create a ReAct agent",
+        "operationId": "create_react_agent",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReactAgentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Agent created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tools/nodes": {
+      "post": {
+        "summary": "Create a ToolNode",
+        "operationId": "create_tool_node",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateToolNodeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "ToolNode created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolNodeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workflows": {
+      "post": {
+        "summary": "Create a workflow with @entrypoint",
+        "operationId": "create_workflow",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWorkflowRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Workflow created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkflowResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateGraphRequest": {
+        "type": "object",
+        "properties": {
+          "state_schema": {
+            "type": "object",
+            "description": "State schema definition"
+          },
+          "name": {
+            "type": "string",
+            "description": "Graph name"
+          }
+        }
+      },
+      "GraphResponse": {
+        "type": "object",
+        "properties": {
+          "graph_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "AddNodeRequest": {
+        "type": "object",
+        "required": [
+          "node_name",
+          "action"
+        ],
+        "properties": {
+          "node_name": {
+            "type": "string"
+          },
+          "action": {
+            "type": "object",
+            "description": "Node action configuration"
+          }
+        }
+      },
+      "AddEdgeRequest": {
+        "type": "object",
+        "required": [
+          "start_key",
+          "end_key"
+        ],
+        "properties": {
+          "start_key": {
+            "type": "string"
+          },
+          "end_key": {
+            "type": "string"
+          }
+        }
+      },
+      "CompileRequest": {
+        "type": "object",
+        "properties": {
+          "checkpointer": {
+            "type": "object",
+            "description": "Checkpointer configuration"
+          }
+        }
+      },
+      "CompiledGraphResponse": {
+        "type": "object",
+        "properties": {
+          "compiled_graph_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "InvokeRequest": {
+        "type": "object",
+        "required": [
+          "input"
+        ],
+        "properties": {
+          "input": {
+            "type": "object",
+            "description": "Input data for graph"
+          },
+          "config": {
+            "type": "object",
+            "description": "Execution configuration"
+          }
+        }
+      },
+      "InvokeResponse": {
+        "type": "object",
+        "properties": {
+          "output": {
+            "type": "object",
+            "description": "Graph execution output"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Execution metadata"
+          }
+        }
+      },
+      "CreateReactAgentRequest": {
+        "type": "object",
+        "required": [
+          "model",
+          "tools"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "LLM model identifier"
+          },
+          "tools": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "List of tools"
+          },
+          "prompt": {
+            "type": "string",
+            "description": "System prompt"
+          }
+        }
+      },
+      "AgentResponse": {
+        "type": "object",
+        "properties": {
+          "agent_id": {
+            "type": "string"
+          },
+          "graph_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateToolNodeRequest": {
+        "type": "object",
+        "required": [
+          "tools"
+        ],
+        "properties": {
+          "tools": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "name": {
+            "type": "string"
+          },
+          "handle_tool_errors": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ToolNodeResponse": {
+        "type": "object",
+        "properties": {
+          "node_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateWorkflowRequest": {
+        "type": "object",
+        "required": [
+          "name",
+          "tasks"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "config": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "checkpointer": {
+            "type": "object"
+          },
+          "store": {
+            "type": "object"
+          }
+        }
+      },
+      "WorkflowResponse": {
+        "type": "object",
+        "properties": {
+          "workflow_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "apiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    }
+  },
+  "security": [
+    {
+      "apiKey": []
+    }
+  ]
+}

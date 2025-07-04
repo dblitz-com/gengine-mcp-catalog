@@ -1,0 +1,153 @@
+{
+  "name": "LangGraph API",
+  "version": "0.2.74",
+  "description": "LangGraph API for building resilient language agents as graphs",
+  "modules": {
+    "core": {
+      "langgraph.graph": {
+        "classes": {
+          "StateGraph": {
+            "description": "Create a state-based computational graph",
+            "methods": {
+              "add_node": {
+                "description": "Add a node to the graph",
+                "parameters": {
+                  "node": "string",
+                  "action": "callable",
+                  "kwargs": "dict"
+                }
+              },
+              "add_edge": {
+                "description": "Add an edge between nodes",
+                "parameters": {
+                  "start_key": "string",
+                  "end_key": "string"
+                }
+              },
+              "add_conditional_edges": {
+                "description": "Add conditional routing between nodes",
+                "parameters": {
+                  "source": "string",
+                  "path": "callable",
+                  "path_map": "dict"
+                }
+              },
+              "compile": {
+                "description": "Compile the graph for execution",
+                "parameters": {
+                  "checkpointer": "BaseCheckpointSaver",
+                  "kwargs": "dict"
+                },
+                "returns": "CompiledStateGraph"
+              }
+            }
+          },
+          "CompiledStateGraph": {
+            "description": "Compiled graph ready for execution",
+            "methods": {
+              "stream": {
+                "description": "Stream graph execution",
+                "parameters": {
+                  "input": "dict",
+                  "config": "dict",
+                  "kwargs": "dict"
+                }
+              },
+              "invoke": {
+                "description": "Invoke graph execution",
+                "parameters": {
+                  "input": "dict",
+                  "config": "dict",
+                  "kwargs": "dict"
+                }
+              },
+              "get_state": {
+                "description": "Get current graph state",
+                "parameters": {
+                  "config": "dict",
+                  "kwargs": "dict"
+                }
+              },
+              "update_state": {
+                "description": "Update graph state",
+                "parameters": {
+                  "config": "dict",
+                  "values": "dict",
+                  "as_node": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "langgraph.func": {
+        "decorators": {
+          "entrypoint": {
+            "description": "Define a LangGraph workflow",
+            "parameters": {
+              "checkpointer": "BaseCheckpointSaver",
+              "store": "BaseStore",
+              "cache": "Cache",
+              "config_schema": "type",
+              "retry_policy": "RetryPolicy"
+            }
+          },
+          "task": {
+            "description": "Define a task within a workflow",
+            "parameters": {
+              "name": "string",
+              "retry_policy": "RetryPolicy",
+              "cache_policy": "CachePolicy"
+            }
+          }
+        }
+      }
+    },
+    "prebuilt": {
+      "langgraph.prebuilt": {
+        "functions": {
+          "create_react_agent": {
+            "description": "Create a ReAct agent that calls tools in a loop",
+            "parameters": {
+              "model": "BaseChatModel",
+              "tools": "list[Tool]",
+              "prompt": "string",
+              "state_schema": "type",
+              "messages_modifier": "callable",
+              "interrupt_before": "list",
+              "interrupt_after": "list",
+              "debug": "bool"
+            },
+            "returns": "CompiledStateGraph"
+          }
+        },
+        "classes": {
+          "ToolNode": {
+            "description": "Node that runs tools from AIMessage",
+            "methods": {
+              "__init__": {
+                "parameters": {
+                  "tools": "list[Tool]",
+                  "name": "string",
+                  "tags": "list",
+                  "handle_tool_errors": "bool"
+                }
+              }
+            }
+          }
+        },
+        "utilities": {
+          "InjectedState": {
+            "description": "Annotation for injecting state into tool calls"
+          },
+          "InjectedStore": {
+            "description": "Annotation for injecting store into tool calls"
+          },
+          "tools_condition": {
+            "description": "Conditional routing for tool execution"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,162 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+archive/logs/
+
+# Neo4j
+neo4j-graphrag-python/
+backups/
+*.cypher
+
+# Processing results
+neo4j_graphrag_processing_*.json
+codebase_processing_results.json
+
+# Temporary files
+*.tmp
+/tmp/
+
+# Claude configuration
+.claude/
+
+# Database
+*.db
+*.sqlite
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Python tools
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.ruff_cache/
+
+# Project specific  
+TODO.md
+!test_codebase.py
+python-graph-visualization/
+repos/
+streamlit-example-reference.py
+mcp-code-graph/
+
+logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dev-debug.log
+# Dependency directories
+node_modules/
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+# OS specific
+
+# Task files
+# tasks.json
+# tasks/ 
+# GitHub Actions Runner
+.github/runners/
+actions-runner/
+_diag/
+_work/
+
+# MCP Catalog generated files
+.generated_mcp.json
+src/mcp_catalog/.generated_mcp.json
+
+# Test artifacts
+test_*.log
+*_test_output/
+test_results/
+
+# Credentials and secrets
+*.pem
+*.key
+*.cert
+*.p12
+.netrc
+credentials.json
+service_account.json
+fresh-mcp-catalog/
