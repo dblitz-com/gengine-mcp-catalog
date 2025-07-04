@@ -1,0 +1,171 @@
+info:
+  title: Untitled service
+  version: 1.0.0
+openapi: 3.1.0
+paths:
+  /api/v1/categories:
+    get:
+      responses:
+        "200":
+          description: 200 response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetApiV1Categories200ResponseBody"
+  /api/v1/servers/{server}:
+    parameters:
+      - in: path
+        name: server
+        required: true
+        schema:
+          type: string
+    get:
+      responses:
+        "400":
+          description: 400 response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetApiV1ServersServer400ResponseBody"
+    post:
+      responses:
+        "200":
+          description: 200 response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostApiV1ServersServer200ResponseBody"
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/PostApiV1ServersServerRequestBody"
+  /api/v1/servers:
+    get:
+      responses:
+        "200":
+          description: 200 response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetApiV1Servers200ResponseBody"
+  /health:
+    get:
+      responses:
+        "200":
+          description: 200 response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetHealth200ResponseBody"
+components:
+  schemas:
+    GetApiV1Categories200ResponseBody:
+      type: array
+      items:
+        type: object
+        properties:
+          count:
+            type: number
+          name:
+            type: string
+        required:
+          - count
+          - name
+    GetApiV1ServersServer400ResponseBody:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+    PostApiV1ServersServerRequestBody:
+      type: object
+      properties:
+        servers:
+          type: array
+          items:
+            type: string
+        format:
+          type: string
+      required:
+        - servers
+        - format
+    PostApiV1ServersServer200ResponseBody:
+      type: object
+      properties:
+        config:
+          type: object
+          properties:
+            mcpServers:
+              type: object
+              properties:
+                context7:
+                  type: object
+                  properties:
+                    args:
+                      type: array
+                      items:
+                        type: string
+                    command:
+                      type: string
+                  required:
+                    - args
+                    - command
+              required:
+                - context7
+          required:
+            - mcpServers
+        format:
+          type: string
+        installation_notes:
+          type: string
+        servers_included:
+          type: array
+          items:
+            type: string
+      required:
+        - config
+        - format
+        - installation_notes
+        - servers_included
+    GetApiV1Servers200ResponseBody:
+      type: array
+      items:
+        type: object
+        properties:
+          category:
+            type: string
+          description:
+            type: string
+          homepage:
+            type: string
+          id:
+            type: string
+          name:
+            type: string
+          vendor:
+            type: string
+        required:
+          - category
+          - description
+          - homepage
+          - id
+          - name
+          - vendor
+    GetHealth200ResponseBody:
+      type: object
+      properties:
+        api_version:
+          type: string
+        catalog_version:
+          type: string
+        server_count:
+          type: number
+        status:
+          type: string
+      required:
+        - api_version
+        - catalog_version
+        - server_count
+        - status

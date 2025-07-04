@@ -1,0 +1,88 @@
+name: flask-api
+language: python
+framework: flask
+description: "Simple Flask REST API - Language-agnostic template for MCP generation"
+
+# API configuration
+api:
+  entry_point: api/server.py
+  default_port: 8000
+  health_endpoint: /health
+  
+# Traffic capture configuration  
+capture:
+  tool: optic
+  config:
+    server_url: http://localhost:8000
+    proxy_port: 34444
+    
+  # Test endpoints to exercise during capture
+  test_endpoints:
+    - path: /health
+      method: GET
+    - path: /api/v1/items
+      method: GET
+    - path: /api/v1/items/search
+      method: GET
+      query:
+        q: example
+    - path: /api/v1/categories
+      method: GET
+    - path: /api/v1/items/create
+      method: POST
+      data:
+        name: "test item"
+        category: "example"
+
+# MCP generation configuration
+mcp:
+  server_name: flask_api
+  output_path: "../../workspace/{name}__mcp_server.py"
+  
+  # Route mapping patterns for MCP types
+  route_maps:
+    - pattern: ".*/health.*"
+      mcp_type: resource
+      tags: ["system", "health"]
+    - pattern: ".*/(items|categories|list)$"
+      mcp_type: resource  
+      tags: ["api", "list"]
+    - pattern: ".*/search.*"
+      mcp_type: tool
+      tags: ["api", "search"]
+    - pattern: "POST|PUT|PATCH|DELETE"
+      mcp_type: tool
+      tags: ["api", "action"]
+
+# Dependencies
+dependencies:
+  python: ">=3.11"
+  packages:
+    - flask>=3.0.0
+    - flask-cors>=4.0.0
+    - requests>=2.31.0
+
+# Instructions for this template
+instructions: |
+  This Flask template demonstrates the GenEngine MCP language-agnostic approach:
+  
+  1. 🐍 Pure Python Flask API with ZERO OpenAPI annotations
+  2. 📡 Traffic capture using Optic CLI automatically infers API structure  
+  3. 🔄 Generated OpenAPI spec → MCP server conversion
+  4. 🚀 Deploy-ready MCP server with FastMCP
+  
+  No Python-specific lock-in - same approach works with Go, Rust, Node.js, etc.
+
+# Example usage
+usage: |
+  # 1. Start the Flask API
+  cd api && python server.py
+  
+  # 2. Capture traffic (from catalog root)
+  python -m catalog --capture
+  
+  # 3. Generate MCP server  
+  python -m catalog --generate
+  
+  # 4. Run MCP server
+  python -m catalog --mcp --transport http --port 8001
