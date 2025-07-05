@@ -6,11 +6,20 @@ A modern REST API for MCP server discovery and configuration generation.
 Provides auto-generated OpenAPI specs for gengine-mcp consumption.
 """
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from .routers import servers, config
 from .dependencies import load_server_registry
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Application lifespan management"""
+    # Startup
+    load_server_registry()
+    yield
+    # Shutdown (if needed)
 
 # Create FastAPI app with metadata
 app = FastAPI(
@@ -19,7 +28,8 @@ app = FastAPI(
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
-    openapi_url="/openapi.json"
+    openapi_url="/openapi.json",
+    lifespan=lifespan
 )
 
 # Configure CORS
@@ -34,12 +44,6 @@ app.add_middleware(
 # Include routers
 app.include_router(servers.router, prefix="/api/v1")
 app.include_router(config.router, prefix="/api/v1")
-
-# Load registry on startup
-@app.on_event("startup")
-async def startup_event():
-    """Load server registry on startup"""
-    load_server_registry()
 
 @app.get("/", response_model=dict)
 async def root():
