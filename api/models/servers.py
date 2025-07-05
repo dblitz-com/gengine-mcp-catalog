@@ -92,3 +92,26 @@ class CategoryInfo(BaseModel):
 class CategoriesResponse(BaseModel):
     """Response for listing categories"""
     categories: List[CategoryInfo] = Field(..., description="Available categories")
+
+
+class ServerTool(BaseModel):
+    """Information about a server tool"""
+    name: str = Field(..., description="Tool name")
+    description: Optional[str] = Field(None, description="Tool description")
+    parameters: Optional[Dict[str, Any]] = Field(None, description="Tool parameters schema")
+
+
+class ServerWithTools(BaseModel):
+    """Server information with available tools"""
+    id: str = Field(..., description="Server ID")
+    name: str = Field(..., description="Server name")
+    description: str = Field(..., description="Server description")
+    tools: List[ServerTool] = Field(default_factory=list, description="Available tools")
+    tool_count: int = Field(0, description="Number of tools")
+
+
+class ServersToolsResponse(BaseModel):
+    """Response for servers with tools endpoint"""
+    servers: List[ServerWithTools] = Field(..., description="Servers with their tools")
+    total_servers: int = Field(..., description="Total number of servers")
+    total_tools: int = Field(..., description="Total number of tools across all servers")
