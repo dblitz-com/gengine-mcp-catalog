@@ -1,0 +1,309 @@
+{
+  "context7": {
+    "id": "io.upstash/context7-mcp",
+    "name": "context7",
+    "description": "Context7 for library documentation, code context, and package resolution",
+    "package": {
+      "name": "@upstash/context7-mcp",
+      "registry": "npm",
+      "version": "latest"
+    },
+    "config": {
+      "env": {},
+      "args": []
+    },
+    "categories": [
+      "documentation",
+      "knowledge-management",
+      "official"
+    ],
+    "repository": {
+      "url": "https://context7.com/",
+      "source": "website"
+    }
+  },
+  "perplexity-ask": {
+    "id": "io.modelcontextprotocol.servers/perplexity-ask",
+    "name": "perplexity-ask",
+    "description": "Perplexity AI integration for web search, research, and real-time information",
+    "package": {
+      "name": "server-perplexity-ask",
+      "registry": "npm",
+      "version": "latest"
+    },
+    "config": {
+      "env": {
+        "PERPLEXITY_API_KEY": {
+          "required": true,
+          "description": "Perplexity API key for AI-powered search"
+        }
+      },
+      "args": []
+    },
+    "categories": [
+      "search",
+      "ai",
+      "research",
+      "official"
+    ],
+    "repository": {
+      "url": "https://docs.perplexity.ai/",
+      "source": "documentation"
+    }
+  },
+  "sequential-thinking": {
+    "id": "io.modelcontextprotocol.servers/sequential-thinking",
+    "name": "sequential-thinking",
+    "description": "Sequential thinking tool for complex problem solving and multi-step analysis",
+    "package": {
+      "name": "@modelcontextprotocol/server-sequential-thinking",
+      "registry": "npm",
+      "version": "latest"
+    },
+    "config": {
+      "env": {},
+      "args": []
+    },
+    "categories": [
+      "problem-solving",
+      "analysis",
+      "official"
+    ],
+    "repository": {
+      "url": "https://github.com/modelcontextprotocol/servers/tree/main/src/sequential-thinking",
+      "source": "github"
+    }
+  },
+  "taskmaster-ai": {
+    "id": "io.taskmaster/taskmaster-ai",
+    "name": "taskmaster-ai",
+    "description": "TaskMaster AI for project management, task automation, and AI-powered research",
+    "package": {
+      "name": "task-master-ai",
+      "registry": "npm",
+      "version": "latest"
+    },
+    "config": {
+      "env": {
+        "OPENAI_API_KEY": {
+          "required": true,
+          "description": "OpenAI API key for AI-powered features"
+        },
+        "PERPLEXITY_API_KEY": {
+          "required": false,
+          "description": "Perplexity API key for research features"
+        }
+      },
+      "args": []
+    },
+    "categories": [
+      "project-management",
+      "automation",
+      "ai",
+      "official"
+    ],
+    "repository": {
+      "url": "https://github.com/taskmaster-ai/taskmaster",
+      "source": "github"
+    }
+  },
+  "filesystem": {
+    "id": "io.modelcontextprotocol.servers/filesystem",
+    "name": "filesystem",
+    "description": "Local filesystem operations with read/write access to specified directories",
+    "package": {
+      "name": "@modelcontextprotocol/server-filesystem",
+      "registry": "npm",
+      "version": "latest"
+    },
+    "config": {
+      "env": {},
+      "args": []
+    },
+    "categories": [
+      "files",
+      "system",
+      "official"
+    ],
+    "repository": {
+      "url": "https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem",
+      "source": "github"
+    }
+  },
+  "memory": {
+    "id": "io.modelcontextprotocol.servers/memory",
+    "name": "memory",
+    "description": "Knowledge graph memory server for persistent information storage",
+    "package": {
+      "name": "@modelcontextprotocol/server-memory",
+      "registry": "npm",
+      "version": "latest"
+    },
+    "config": {
+      "env": {
+        "MEMORY_FILE_PATH": {
+          "required": false,
+          "description": "Optional custom path for memory storage file"
+        }
+      },
+      "args": []
+    },
+    "categories": [
+      "memory",
+      "knowledge-management",
+      "official"
+    ],
+    "repository": {
+      "url": "https://github.com/modelcontextprotocol/servers/tree/main/src/memory",
+      "source": "github"
+    }
+  },
+  "github": {
+    "id": "io.modelcontextprotocol.servers/github",
+    "name": "github",
+    "description": "GitHub repository management and operations",
+    "package": {
+      "name": "@modelcontextprotocol/server-github",
+      "registry": "npm",
+      "version": "latest"
+    },
+    "config": {
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": {
+          "required": true,
+          "description": "GitHub personal access token for API operations"
+        }
+      },
+      "args": []
+    },
+    "categories": [
+      "version-control",
+      "development",
+      "official"
+    ],
+    "repository": {
+      "url": "https://github.com/modelcontextprotocol/servers/tree/main/src/github",
+      "source": "github"
+    }
+  },
+  "git": {
+    "id": "io.modelcontextprotocol.servers/git",
+    "name": "git",
+    "description": "Git repository operations and version control",
+    "package": {
+      "name": "mcp-server-git",
+      "registry": "pypi",
+      "version": "latest"
+    },
+    "config": {
+      "env": {},
+      "args": ["--repository", "."]
+    },
+    "categories": [
+      "version-control",
+      "development",
+      "official"
+    ],
+    "repository": {
+      "url": "https://github.com/modelcontextprotocol/servers/tree/main/src/git",
+      "source": "github"
+    }
+  },
+  "fetch": {
+    "id": "io.modelcontextprotocol.servers/fetch",
+    "name": "fetch",
+    "description": "Web content fetching and HTTP operations",
+    "package": {
+      "name": "mcp-server-fetch",
+      "registry": "pypi",
+      "version": "latest"
+    },
+    "config": {
+      "env": {},
+      "args": []
+    },
+    "categories": [
+      "web",
+      "data-retrieval",
+      "official"
+    ],
+    "repository": {
+      "url": "https://github.com/modelcontextprotocol/servers/tree/main/src/fetch",
+      "source": "github"
+    }
+  },
+  "google-drive": {
+    "id": "io.modelcontextprotocol.servers/gdrive",
+    "name": "google-drive",
+    "description": "Google Drive file operations and management",
+    "package": {
+      "name": "@modelcontextprotocol/server-gdrive",
+      "registry": "npm",
+      "version": "latest"
+    },
+    "config": {
+      "env": {
+        "GDRIVE_CREDENTIALS_PATH": {
+          "required": true,
+          "description": "Path to Google Drive API credentials JSON file"
+        }
+      },
+      "args": []
+    },
+    "categories": [
+      "cloud-storage",
+      "files",
+      "official"
+    ],
+    "repository": {
+      "url": "https://github.com/modelcontextprotocol/servers/tree/main/src/gdrive",
+      "source": "github"
+    }
+  },
+  "postgres": {
+    "id": "io.modelcontextprotocol.servers/postgres",
+    "name": "postgres",
+    "description": "PostgreSQL database operations and queries",
+    "package": {
+      "name": "@modelcontextprotocol/server-postgres",
+      "registry": "npm",
+      "version": "latest"
+    },
+    "config": {
+      "env": {},
+      "args": ["postgresql://localhost/mydb"]
+    },
+    "categories": [
+      "database",
+      "data",
+      "official"
+    ],
+    "repository": {
+      "url": "https://github.com/modelcontextprotocol/servers/tree/main/src/postgres",
+      "source": "github"
+    }
+  },
+  "sqlite": {
+    "id": "io.modelcontextprotocol.servers/sqlite",
+    "name": "sqlite",
+    "description": "SQLite database operations and queries",
+    "package": {
+      "name": "mcp-server-sqlite",
+      "registry": "pypi",
+      "version": "latest"
+    },
+    "config": {
+      "env": {},
+      "args": ["--db-path", "database.db"]
+    },
+    "categories": [
+      "database",
+      "data",
+      "official"
+    ],
+    "repository": {
+      "url": "https://github.com/modelcontextprotocol/servers/tree/main/src/sqlite",
+      "source": "github"
+    }
+  }
+}

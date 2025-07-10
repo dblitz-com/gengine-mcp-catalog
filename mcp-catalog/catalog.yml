@@ -1,0 +1,69 @@
+name: mcp-catalog
+version: "2.0.0"
+description: "MCP Catalog - Language-agnostic OpenAPI → MCP Server generation"
+type: gengine-mcp-component
+
+# Component metadata for gengine-mcp integration
+component:
+  category: mcp-generation
+  capabilities:
+    - traffic-capture
+    - openapi-generation  
+    - mcp-server-generation
+    - language-agnostic
+  
+  # Supported API languages/frameworks
+  supported_apis:
+    - flask
+    - go-http
+    - nodejs-express
+    - rust-axum
+    - java-spring
+    - any-rest-api
+  
+  # Traffic capture tools
+  capture_tools:
+    - optic-cli
+    - autospec
+    - devtools-extension
+  
+  # Entry points
+  cli: framework/cli/__main__.py
+  generators:
+    openapi: framework/generators/generate_openapi.py
+    mcp: framework/generators/generate_mcp_server.py
+  
+  # Known servers registry
+  registry: framework/registry/known_servers.json
+
+# Workspace configuration
+workspace:
+  instances_dir: instances/
+  capture_dir: workspace/
+  temp_dir: workspace/temp/
+
+# Example templates
+examples:
+  - name: flask-api
+    language: python
+    framework: flask
+    description: "Simple Flask REST API - demonstrates language-agnostic MCP generation"
+  
+  - name: go-api
+    language: go  
+    framework: net/http
+    description: "Simple Go HTTP server - demonstrates language-agnostic MCP generation"
+  
+  - name: nodejs-api
+    language: javascript
+    framework: express
+    description: "Simple Node.js Express API - demonstrates language-agnostic MCP generation"
+
+# Integration with parent gengine-mcp
+parent_integration:
+  submodule_path: catalog/
+  config_namespace: catalog
+  shared_dependencies:
+    - fastmcp
+    - httpx
+    - optic-cli
